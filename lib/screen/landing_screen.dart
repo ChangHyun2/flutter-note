@@ -1,10 +1,39 @@
-import 'package:flutter/cupertino.dart';
+import 'package:bside_todolist/provider/auth_provider.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'package:provider/provider.dart';
 
-class LandingScreen extends StatelessWidget {
+class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
 
   @override
+  State<LandingScreen> createState() => _LandingScreenState();
+}
+
+class _LandingScreenState extends State<LandingScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      var authProvider = Provider.of<AuthProvider>(context, listen: false);
+      authProvider.kakaoCheckUser().then((kakaoUser) {
+        if (kakaoUser != null) {
+          context.go('/problems');
+        } else {
+          context.go('/login');
+        }
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      body: Center(
+        child: Lottie.asset('assets/landing.json'),
+      ),
+    );
   }
 }

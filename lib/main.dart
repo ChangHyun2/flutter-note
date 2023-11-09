@@ -1,4 +1,5 @@
 import 'package:bside_todolist/components/bottom_nav_bar.dart';
+import 'package:bside_todolist/provider/auth_provider.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
 import 'package:bside_todolist/screen/history_screen.dart';
 import 'package:bside_todolist/screen/login_screen.dart';
@@ -12,34 +13,41 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
 
   // 웹 환경에서 카카오 로그인을 정상적으로 완료하려면 runApp() 호출 전 아래 메서드 호출 필요
   WidgetsFlutterBinding.ensureInitialized();
-
   // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_APP_KEY'],
   );
 
-  runApp(MyApp());
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
+    ],
+    child: MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
   MyApp({super.key});
 
   final _router = GoRouter(
-    initialLocation: '/problems',
+    initialLocation: '/landing',
     routes: <RouteBase>[
       GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
       GoRoute(path: '/login', builder: (conext, state) => LoginScreen()),
       ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {
-            return Scaffold(
-              body: child,
-              bottomNavigationBar: ScaffoldWithNavBar(child: child),
+            return SafeArea(
+              child: Scaffold(
+                body: child,
+                bottomNavigationBar: ScaffoldWithNavBar(child: child),
+              ),
             );
           },
           routes: [
