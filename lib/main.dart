@@ -6,7 +6,9 @@ import 'package:bside_todolist/screen/login_screen.dart';
 import 'package:bside_todolist/screen/problems_screen.dart';
 import 'package:bside_todolist/screen/profile_screen.dart';
 import 'package:bside_todolist/screen/quiz_screen.dart';
-import 'package:bside_todolist/screen/upload_screen.dart';
+import 'package:bside_todolist/screen/photo_screen.dart';
+import 'package:camera/camera.dart';
+import 'package:bside_todolist/screen/document_scanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -20,6 +22,7 @@ Future main() async {
 
   // 웹 환경에서 카카오 로그인을 정상적으로 완료하려면 runApp() 호출 전 아래 메서드 호출 필요
   WidgetsFlutterBinding.ensureInitialized();
+
   // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
     nativeAppKey: dotenv.env['KAKAO_APP_KEY'],
@@ -34,8 +37,6 @@ Future main() async {
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
-
   final _router = GoRouter(
     initialLocation: '/landing',
     routes: <RouteBase>[
@@ -61,7 +62,7 @@ class MyApp extends StatelessWidget {
             ),
             GoRoute(
               path: '/upload',
-              builder: (context, state) => UploadScreen(),
+              builder: (context, state) => PhotoScreen(),
             ),
             GoRoute(
               path: '/profile',
@@ -69,7 +70,11 @@ class MyApp extends StatelessWidget {
             ),
             GoRoute(
               path: '/history',
-              builder: (context, state) => HistoryScreen(),
+              builder: (context, state) => DocumentScanner(),
+            ),
+            GoRoute(
+              path: '/document',
+              builder: (context, state) => DocumentScanner(),
             ),
           ])
     ],

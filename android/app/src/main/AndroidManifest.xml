@@ -2,7 +2,10 @@
     <application
         android:label="bside_todolist"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:requestLegacyExternalStorage="true"
+        >
+
 
         <!-- 카카오 로그인 커스텀 URL 스킴 설정 -->
         <activity

@@ -1,0 +1,194 @@
+import 'dart:io';
+
+import 'package:camera/camera.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
+
+class PhotoScreen extends StatefulWidget {
+  const PhotoScreen({super.key});
+
+  @override
+  State<PhotoScreen> createState() => _PhotoScreenState();
+}
+
+class _PhotoScreenState extends State<PhotoScreen> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+  var isLoadingCamera = true;
+  var _image = null;
+  var _selectedMode = [true, false];
+
+  Future<String> getFilePath(String fileName) async {
+    Directory appDocumentsDirectory =
+        await getApplicationDocumentsDirectory(); // 1
+    String appDocumentsPath = appDocumentsDirectory.path; // 2
+    String filePath = '$appDocumentsPath/$fileName'; // 3
+
+    return filePath;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+// Obtain a list of the available cameras on the device.
+      final cameras = await availableCameras();
+
+// Get a specific camera from the list of available cameras.
+      final firstCamera = cameras.first;
+
+      // To display the current output from the Camera,
+      // create a CameraController.
+
+      _controller = CameraController(
+        // Get a specific camera from the list of available cameras.
+        firstCamera,
+        // Define the resolution to use.
+        ResolutionPreset.medium,
+      );
+
+      // Next, initialize the controller. This returns a Future.
+      _initializeControllerFuture = _controller.initialize();
+
+      setState(() {
+        isLoadingCamera = false;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    // Dispose of the controller when the widget is disposed.
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        _selectedMode[0]
+            ? Column(
+                children: [
+                  FutureBuilder<void>(
+                    future: _initializeControllerFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.done) {
+                        return CameraPreview(_controller);
+                      } else {
+                        // Otherwise, display a loading indicator.
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                    },
+                  ),
+                  isLoadingCamera
+                      ? Text('')
+                      : FloatingActionButton(
+                          // Provide an onPressed callback.
+                          onPressed: () async {
+                            // Take the Picture in a try / catch block. If anything goes wrong,
+                            // catch the error.
+                            try {
+                              // Ensure that the camera is initialized.
+                              await _initializeControllerFuture;
+
+                              // Attempt to take a picture and then get the location
+                              // where the image file is saved.
+                              final image = await _controller.takePicture();
+
+                              print(image.path);
+                              print(image.name);
+                              print(image.mimeType);
+                              ImageGallerySaver.saveImage(
+                                  await image.readAsBytes());
+                              setState(() {
+                                _image = image;
+                              });
+                              if (!mounted) return;
+                            } catch (e) {
+                              // If an error occurs, log the error to the console.
+                              print(e);
+                            }
+                          },
+                          child: const Icon(Icons.camera_alt),
+                        ),
+                ],
+              )
+            : Expanded(
+                child: CustomScrollView(
+                  primary: false,
+                  slivers: <Widget>[
+                    SliverPadding(
+                      padding: const EdgeInsets.all(20),
+                      sliver: SliverGrid.count(
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 10,
+                        crossAxisCount: 3,
+                        children: <Widget>[
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            color: Colors.green[100],
+                            child:
+                                const Text("He'd have you all unravel at the"),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            color: Colors.green[200],
+                            child: const Text('Heed not the rabble'),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            color: Colors.green[300],
+                            child: const Text('Sound of screams but the'),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            color: Colors.green[400],
+                            child: const Text('Who scream'),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            color: Colors.green[500],
+                            child: const Text('Revolution is coming...'),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            color: Colors.green[600],
+                            child: const Text('Revolution, they...'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+        Container(
+          child: Column(
+            children: [
+              _selectedMode[0] ? Text('작성할 문제를 촬영해 주세요.') : Text(''),
+              ToggleButtons(
+                children: [
+                  Text('촬영'),
+                  Text('갤러리'),
+                ],
+                isSelected: _selectedMode,
+                onPressed: (int index) {
+                  setState(() {
+                    // The button that is tapped is set to true, and the others to false.
+                    for (int i = 0; i < _selectedMode.length; i++) {
+                      _selectedMode[i] = i == index;
+                    }
+                  });
+                },
+              )
+            ],
+          ),
+        )
+      ],
+    );
+  }
+}

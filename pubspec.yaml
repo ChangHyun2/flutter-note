@@ -42,6 +42,14 @@ dependencies:
   lottie: ^2.7.0
   jwt_decoder: ^2.0.1
   provider: ^6.1.0
+  camera: ^0.10.5+5
+  path: ^1.8.3
+  path_provider: ^2.1.1
+  image_gallery_saver: ^2.0.3
+  document_scanner_flutter:
+    git:
+      url: https://github.com/dattm2593/document_scanner_flutter.git
+      ref: 6ead0cf989e3d3567c785ab2774737a4f8e7bcd7
 
 dev_dependencies:
   flutter_test:
