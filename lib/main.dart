@@ -28,64 +28,77 @@ Future main() async {
     nativeAppKey: dotenv.env['KAKAO_APP_KEY'],
   );
 
+// Obtain a list of the available cameras on the device.
+  final cameras = await availableCameras();
+
+// Get a specific camera from the list of available cameras.
+  final firstCamera = cameras.first;
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
     ],
-    child: MyApp(),
+    child: MyApp(camera: firstCamera),
   ));
 }
 
 class MyApp extends StatelessWidget {
-  final _router = GoRouter(
-    initialLocation: '/landing',
-    routes: <RouteBase>[
-      GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
-      GoRoute(path: '/login', builder: (conext, state) => LoginScreen()),
-      ShellRoute(
-          builder: (BuildContext context, GoRouterState state, Widget child) {
-            return SafeArea(
-              child: Scaffold(
-                body: child,
-                bottomNavigationBar: ScaffoldWithNavBar(child: child),
+  final CameraDescription camera;
+
+  MyApp({super.key, required this.camera});
+
+  GoRouter _router(camera) {
+    return GoRouter(
+      initialLocation: '/landing',
+      routes: <RouteBase>[
+        GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
+        GoRoute(path: '/login', builder: (conext, state) => LoginScreen()),
+        ShellRoute(
+            builder: (BuildContext context, GoRouterState state, Widget child) {
+              return SafeArea(
+                child: Scaffold(
+                  body: child,
+                  bottomNavigationBar: ScaffoldWithNavBar(child: child),
+                ),
+              );
+            },
+            routes: [
+              GoRoute(
+                path: '/problems',
+                builder: (context, state) => ProblemsScreen(),
               ),
-            );
-          },
-          routes: [
-            GoRoute(
-              path: '/problems',
-              builder: (context, state) => ProblemsScreen(),
-            ),
-            GoRoute(
-              path: '/quiz',
-              builder: (context, state) => QuizScreen(),
-            ),
-            GoRoute(
-              path: '/upload',
-              builder: (context, state) => PhotoScreen(),
-            ),
-            GoRoute(
-              path: '/profile',
-              builder: (context, state) => ProfileScreen(),
-            ),
-            GoRoute(
-              path: '/history',
-              builder: (context, state) => DocumentScanner(),
-            ),
-            GoRoute(
-              path: '/document',
-              builder: (context, state) => DocumentScanner(),
-            ),
-          ])
-    ],
-  );
+              GoRoute(
+                path: '/quiz',
+                builder: (context, state) => QuizScreen(),
+              ),
+              GoRoute(
+                  path: '/upload',
+                  builder: (context, state) {
+                    return PhotoScreen(camera: camera);
+                  }),
+              GoRoute(
+                path: '/profile',
+                builder: (context, state) => ProfileScreen(),
+              ),
+              GoRoute(
+                path: '/history',
+                builder: (context, state) => DocumentScanner(),
+              ),
+              GoRoute(
+                path: '/document',
+                builder: (context, state) => DocumentScanner(),
+              ),
+            ])
+      ],
+    );
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
       title: 'bside8',
-      routerConfig: _router,
+      routerConfig: _router(camera),
     );
   }
 }

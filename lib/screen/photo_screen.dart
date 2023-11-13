@@ -8,7 +8,12 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
 class PhotoScreen extends StatefulWidget {
-  const PhotoScreen({super.key});
+  const PhotoScreen({
+    super.key,
+    required this.camera,
+  });
+
+  final CameraDescription camera;
 
   @override
   State<PhotoScreen> createState() => _PhotoScreenState();
@@ -33,31 +38,18 @@ class _PhotoScreenState extends State<PhotoScreen> {
   @override
   void initState() {
     super.initState();
+    // To display the current output from the Camera,
+    // create a CameraController.
 
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-// Obtain a list of the available cameras on the device.
-      final cameras = await availableCameras();
+    _controller = CameraController(
+      // Get a specific camera from the list of available cameras.
+      widget.camera,
+      // Define the resolution to use.
+      ResolutionPreset.medium,
+    );
 
-// Get a specific camera from the list of available cameras.
-      final firstCamera = cameras.first;
-
-      // To display the current output from the Camera,
-      // create a CameraController.
-
-      _controller = CameraController(
-        // Get a specific camera from the list of available cameras.
-        firstCamera,
-        // Define the resolution to use.
-        ResolutionPreset.medium,
-      );
-
-      // Next, initialize the controller. This returns a Future.
-      _initializeControllerFuture = _controller.initialize();
-
-      setState(() {
-        isLoadingCamera = false;
-      });
-    });
+    // Next, initialize the controller. This returns a Future.
+    _initializeControllerFuture = _controller.initialize();
   }
 
   @override
@@ -85,37 +77,34 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       }
                     },
                   ),
-                  isLoadingCamera
-                      ? Text('')
-                      : FloatingActionButton(
-                          // Provide an onPressed callback.
-                          onPressed: () async {
-                            // Take the Picture in a try / catch block. If anything goes wrong,
-                            // catch the error.
-                            try {
-                              // Ensure that the camera is initialized.
-                              await _initializeControllerFuture;
+                  FloatingActionButton(
+                    // Provide an onPressed callback.
+                    onPressed: () async {
+                      // Take the Picture in a try / catch block. If anything goes wrong,
+                      // catch the error.
+                      try {
+                        // Ensure that the camera is initialized.
+                        await _initializeControllerFuture;
 
-                              // Attempt to take a picture and then get the location
-                              // where the image file is saved.
-                              final image = await _controller.takePicture();
+                        // Attempt to take a picture and then get the location
+                        // where the image file is saved.
+                        final image = await _controller.takePicture();
 
-                              print(image.path);
-                              print(image.name);
-                              print(image.mimeType);
-                              ImageGallerySaver.saveImage(
-                                  await image.readAsBytes());
-                              setState(() {
-                                _image = image;
-                              });
-                              if (!mounted) return;
-                            } catch (e) {
-                              // If an error occurs, log the error to the console.
-                              print(e);
-                            }
-                          },
-                          child: const Icon(Icons.camera_alt),
-                        ),
+                        print(image.path);
+                        print(image.name);
+                        print(image.mimeType);
+                        ImageGallerySaver.saveImage(await image.readAsBytes());
+                        setState(() {
+                          _image = image;
+                        });
+                        if (!mounted) return;
+                      } catch (e) {
+                        // If an error occurs, log the error to the console.
+                        print(e);
+                      }
+                    },
+                    child: const Icon(Icons.camera_alt),
+                  ),
                 ],
               )
             : Expanded(
