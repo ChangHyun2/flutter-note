@@ -1,14 +1,14 @@
 import 'package:bside_todolist/components/bottom_nav_bar.dart';
 import 'package:bside_todolist/provider/auth_provider.dart';
+import 'package:bside_todolist/screen/cunning_document_scanner_screen.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
 import 'package:bside_todolist/screen/history_screen.dart';
 import 'package:bside_todolist/screen/login_screen.dart';
-import 'package:bside_todolist/screen/problems_screen.dart';
+import 'package:bside_todolist/screen/home.dart';
 import 'package:bside_todolist/screen/profile_screen.dart';
 import 'package:bside_todolist/screen/quiz_screen.dart';
 import 'package:bside_todolist/screen/photo_screen.dart';
 import 'package:camera/camera.dart';
-import 'package:bside_todolist/screen/document_scanner.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -57,6 +57,7 @@ class MyApp extends StatelessWidget {
             builder: (BuildContext context, GoRouterState state, Widget child) {
               return SafeArea(
                 child: Scaffold(
+                  resizeToAvoidBottomInset: false,
                   body: child,
                   bottomNavigationBar: ScaffoldWithNavBar(child: child),
                 ),
@@ -65,7 +66,7 @@ class MyApp extends StatelessWidget {
             routes: [
               GoRoute(
                 path: '/problems',
-                builder: (context, state) => ProblemsScreen(),
+                builder: (context, state) => HomeScreen(),
               ),
               GoRoute(
                 path: '/quiz',
@@ -74,7 +75,7 @@ class MyApp extends StatelessWidget {
               GoRoute(
                   path: '/upload',
                   builder: (context, state) {
-                    return PhotoScreen(camera: camera);
+                    return CunningDocumentScannerScreen();
                   }),
               GoRoute(
                 path: '/profile',
@@ -82,11 +83,7 @@ class MyApp extends StatelessWidget {
               ),
               GoRoute(
                 path: '/history',
-                builder: (context, state) => DocumentScanner(),
-              ),
-              GoRoute(
-                path: '/document',
-                builder: (context, state) => DocumentScanner(),
+                builder: (context, state) => HistoryScreen(),
               ),
             ])
       ],
@@ -99,6 +96,17 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       title: 'bside8',
       routerConfig: _router(camera),
+      theme: ThemeData(
+        scaffoldBackgroundColor: Colors.white,
+        fontFamily: 'Apple SD Gothic Neo',
+        fontFamilyFallback: ['SF Pro Text'],
+        textTheme: TextTheme(
+          headline1: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+      ),
     );
   }
 }

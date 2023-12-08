@@ -1,3 +1,4 @@
+import 'package:bside_todolist/design_system/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -23,10 +24,6 @@ class ScaffoldWithNavBar extends StatelessWidget {
     if (location.startsWith('/profile')) {
       return 3;
     }
-    if (location.startsWith('/document')) {
-      return 4;
-    }
-
     return 0;
   }
 
@@ -44,41 +41,45 @@ class ScaffoldWithNavBar extends StatelessWidget {
       case 3:
         GoRouter.of(context).go('/profile');
         break;
-      case 4:
-        GoRouter.of(context).go('/document');
-        break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: Colors.green.shade600,
-      unselectedItemColor: Colors.grey.shade600,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.menu_book),
-          label: '내 문제',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.quiz),
-          label: '퀴즈 풀기',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.camera_enhance),
-          label: '카메라',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: '내 정보',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.history),
-          label: '히스토리',
-        ),
-      ],
-      currentIndex: _calculateSelectedIndex(context),
-      onTap: (int idx) => _onItemTapped(idx, context),
+    return Container(
+      decoration: const BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            color: Color.fromRGBO(0, 0, 0, 0.08),
+            blurRadius: 10,
+          ),
+        ],
+      ),
+      child: BottomNavigationBar(
+        showUnselectedLabels: true,
+        selectedItemColor: MyColors.starGreen,
+        unselectedItemColor: MyColors.gray500,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.menu_book),
+            label: '홈',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.quiz),
+            label: '오답노트',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.camera_enhance),
+            label: '문제등록',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: '내정보',
+          ),
+        ],
+        currentIndex: _calculateSelectedIndex(context),
+        onTap: (int idx) => _onItemTapped(idx, context),
+      ),
     );
   }
 }

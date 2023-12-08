@@ -22,6 +22,13 @@ class AuthProvider extends ChangeNotifier {
     try {
       AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
 
+      User user = await UserApi.instance.me();
+      print('사용자 정보 요청 성공'
+          '\n회원번호: ${user.id}'
+          '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
+          '\n이메일: ${user.kakaoAccount?.email}'
+          '\n프사: ${user.kakaoAccount?.profile?.thumbnailImageUrl}');
+
       print('토큰 정보 보기 성공'
           '\n회원정보: ${tokenInfo.id}'
           '\n만료시간: ${tokenInfo.expiresIn} 초'

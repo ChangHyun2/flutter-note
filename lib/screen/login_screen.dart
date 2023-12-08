@@ -1,9 +1,15 @@
+import 'package:bside_todolist/design_system/colors.dart';
+import 'package:bside_todolist/design_system/texts.dart';
 import 'package:bside_todolist/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+
+import '../design_system/texts.dart';
+import '../design_system/texts.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -18,20 +24,68 @@ class _LoginScreenState extends State<LoginScreen> {
     var auth = context.watch<AuthProvider>();
 
     return Scaffold(
+      backgroundColor: MyColors.starGreen,
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
           children: [
-            Lottie.asset('assets/login.json'),
-            ElevatedButton(
-              onPressed: () async {
-                var kakaoUser = await auth.kakaoLogin();
+            Positioned(
+              top: 130,
+              child: Container(
+                height: 370,
+                child: Lottie.asset('assets/login.json'),
+              ),
+            ),
+            Positioned(
+              bottom: 66,
+              child: Column(
+                children: [
+                  Text(
+                    '지금 별별노트에 가입하고',
+                    style: MyTexts.KRRegular14.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    '틀린 문제를 다시 풀어보세요!',
+                    style: MyTexts.KRRegular14.copyWith(
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Container(
+                    decoration: const BoxDecoration(
+                      boxShadow: [
+                        BoxShadow(
+                          color: Color.fromRGBO(0, 0, 0, 0.08),
+                          offset: Offset(2, 4),
+                          blurRadius: 10,
+                        ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: MyColors.kakao,
+                        fixedSize: Size(300, 45),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      onPressed: () async {
+                        var kakaoUser = await auth.kakaoLogin();
 
-                if (kakaoUser != null) {
-                  context.go('/problems');
-                }
-              },
-              child: const Text('카카오 로그인'),
+                        if (kakaoUser != null) {
+                          context.go('/problems');
+                        }
+                      },
+                      child: const Text(
+                        '카카오톡으로 로그인',
+                        style: MyTexts.KRRegular16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             )
           ],
         ),

@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 
 class PhotoScreen extends StatefulWidget {
@@ -35,6 +36,11 @@ class _PhotoScreenState extends State<PhotoScreen> {
     return filePath;
   }
 
+  getImages() async {
+    String appDir =
+        '/var/mobile/Containers/Data/Application/3FCC9B22-0A61-4018-B332-DC704A362019/Documents/camera/pictures';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +52,7 @@ class _PhotoScreenState extends State<PhotoScreen> {
       widget.camera,
       // Define the resolution to use.
       ResolutionPreset.medium,
+      enableAudio: false,
     );
 
     // Next, initialize the controller. This returns a Future.
@@ -84,7 +91,29 @@ class _PhotoScreenState extends State<PhotoScreen> {
                       // catch the error.
                       try {
                         // Ensure that the camera is initialized.
+
+                        var cameraPermission = await Permission.camera.status;
+
+                        if (!cameraPermission.isGranted) {
+                          print('not granted');
+                          final result = await Permission.photos.request();
+
+                          if (result.isPermanentlyDenied) {
+                            await openAppSettings();
+                          }
+                        }
+
                         await _initializeControllerFuture;
+                        var photoPermission = await Permission.photos.status;
+                        print(photoPermission);
+                        if (!photoPermission.isGranted) {
+                          print('not granted');
+                          final result = await Permission.photos.request();
+
+                          if (result.isPermanentlyDenied) {
+                            await openAppSettings();
+                          }
+                        }
 
                         // Attempt to take a picture and then get the location
                         // where the image file is saved.
@@ -93,7 +122,9 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         print(image.path);
                         print(image.name);
                         print(image.mimeType);
-                        ImageGallerySaver.saveImage(await image.readAsBytes());
+                        final result = await ImageGallerySaver.saveImage(
+                            await image.readAsBytes());
+                        print(result);
                         setState(() {
                           _image = image;
                         });
@@ -118,12 +149,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
                         mainAxisSpacing: 10,
                         crossAxisCount: 3,
                         children: <Widget>[
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            color: Colors.green[100],
-                            child:
-                                const Text("He'd have you all unravel at the"),
-                          ),
+                          Image.file(File(
+                              '/var/mobile/Containers/Data/Application/3FCC9B22-0A61-4018-B332-DC704A362019/Documents/camera/pictures/CAP_2B16BD07-CCBE-4235-ADFF-7757F56ECA4B.jpg')),
                           Container(
                             padding: const EdgeInsets.all(8),
                             color: Colors.green[200],
