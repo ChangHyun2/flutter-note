@@ -32,7 +32,7 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Lottie.asset('assets/landing.json'),
+        child: Lottie.asset('assets/splash.json'),
       ),
     );
   }

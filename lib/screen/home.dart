@@ -5,6 +5,7 @@ import 'package:bside_todolist/design_system/texts.dart';
 import 'package:bside_todolist/provider/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
 class Profile extends StatelessWidget {
@@ -145,6 +146,14 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Container(
+                        color: MyColors.starGreen,
+                        child: Lottie.asset(
+                          'assets/splash.json',
+                          width: 400,
+                          height: 400,
+                        ),
+                      ),
                       Container(
                         padding: EdgeInsets.all(36),
                         child: Row(

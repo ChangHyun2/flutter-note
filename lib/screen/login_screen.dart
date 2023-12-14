@@ -1,8 +1,13 @@
+import 'dart:convert';
+
+import 'package:bside_todolist/api/api.dart';
+import 'package:bside_todolist/api/apiClient.dart';
 import 'package:bside_todolist/design_system/colors.dart';
 import 'package:bside_todolist/design_system/texts.dart';
 import 'package:bside_todolist/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:lottie/lottie.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:path/path.dart';
@@ -22,6 +27,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     var auth = context.watch<AuthProvider>();
+    RestClient apiClient = getApiClient();
 
     return Scaffold(
       backgroundColor: MyColors.starGreen,
@@ -74,8 +80,31 @@ class _LoginScreenState extends State<LoginScreen> {
                       onPressed: () async {
                         var kakaoUser = await auth.kakaoLogin();
 
-                        if (kakaoUser != null) {
-                          context.go('/problems');
+                        User user = await UserApi.instance.me();
+
+                        if (user.kakaoAccount != null) {
+                          final kakaoAccount = user.kakaoAccount!;
+
+                          print(kakaoAccount.toString());
+                          PostAuthKakaoRequest postAuthKakaoRequest =
+                              PostAuthKakaoRequest(
+                                  id: user.id,
+                                  email: kakaoAccount.email!,
+                                  nickname: kakaoAccount.profile!.nickname!,
+                                  profileUrl:
+                                      kakaoAccount.profile!.thumbnailImageUrl!);
+
+                          print(postAuthKakaoRequest.toJson());
+
+                          apiClient
+                              .postAuthKakao(postAuthKakaoRequest)
+                              .then((value) {
+                            print(value.response.statusCode);
+                            print(value.data);
+                            context.go('/problems');
+                          }).catchError((e) {
+                            print(e.toString());
+                          });
                         }
                       },
                       child: const Text(

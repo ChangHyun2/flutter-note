@@ -1,23 +1,35 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'example.dart';
+part of 'api.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Task _$TaskFromJson(Map<String, dynamic> json) => Task(
-      id: json['id'] as String?,
-      name: json['name'] as String?,
-      avatar: json['avatar'] as String?,
-      createdAt: json['createdAt'] as String?,
+PostAuthKakaoRequest _$PostAuthKakaoRequestFromJson(
+        Map<String, dynamic> json) =>
+    PostAuthKakaoRequest(
+      id: json['id'] as int,
+      email: json['email'] as String,
+      nickname: json['nickname'] as String,
+      profileUrl: json['profileUrl'] as String,
     );
 
-Map<String, dynamic> _$TaskToJson(Task instance) => <String, dynamic>{
+Map<String, dynamic> _$PostAuthKakaoRequestToJson(
+        PostAuthKakaoRequest instance) =>
+    <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
-      'avatar': instance.avatar,
-      'createdAt': instance.createdAt,
+      'email': instance.email,
+      'nickname': instance.nickname,
+      'profileUrl': instance.profileUrl,
+    };
+
+Token _$TokenFromJson(Map<String, dynamic> json) => Token(
+      accessToken: json['accessToken'] as String,
+    );
+
+Map<String, dynamic> _$TokenToJson(Token instance) => <String, dynamic>{
+      'accessToken': instance.accessToken,
     };
 
 // **************************************************************************
@@ -39,20 +51,22 @@ class _RestClient implements RestClient {
   String? baseUrl;
 
   @override
-  Future<List<Task>> getTasks() async {
+  Future<HttpResponse<Token>> postAuthKakao(
+      PostAuthKakaoRequest request) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final Map<String, dynamic>? _data = null;
-    final _result =
-        await _dio.fetch<List<dynamic>>(_setStreamType<List<Task>>(Options(
-      method: 'GET',
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<Token>>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/tasks',
+              '/auth/kakao',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -61,10 +75,9 @@ class _RestClient implements RestClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var value = _result.data!
-        .map((dynamic i) => Task.fromJson(i as Map<String, dynamic>))
-        .toList();
-    return value;
+    final value = Token.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
   }
 
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
