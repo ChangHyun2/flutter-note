@@ -57,4 +57,12 @@ class MyTexts {
     fontSize: 14,
     height: 1.5,
   );
+
+  static const TextStyle KR16700 = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 16,
+    height: 1.5,
+  );
 }

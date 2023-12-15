@@ -32,6 +32,22 @@ Map<String, dynamic> _$TokenToJson(Token instance) => <String, dynamic>{
       'accessToken': instance.accessToken,
     };
 
+Subject _$SubjectFromJson(Map<String, dynamic> json) => Subject(
+      subjectId: json['subjectId'] as String,
+      subjectName: json['subjectName'] as String,
+      subjectSize: json['subjectSize'] as int,
+      createdAt: json['createdAt'] as String,
+      modifiedAt: json['modifiedAt'] as String,
+    );
+
+Map<String, dynamic> _$SubjectToJson(Subject instance) => <String, dynamic>{
+      'subjectId': instance.subjectId,
+      'subjectName': instance.subjectName,
+      'subjectSize': instance.subjectSize,
+      'createdAt': instance.createdAt,
+      'modifiedAt': instance.modifiedAt,
+    };
+
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************

@@ -1,5 +1,7 @@
+import 'package:bside_todolist/api/api.dart';
 import 'package:bside_todolist/components/button.dart';
 import 'package:bside_todolist/components/card_wrapper.dart';
+import 'package:bside_todolist/design_system/box_shadow.dart';
 import 'package:bside_todolist/design_system/colors.dart';
 import 'package:bside_todolist/design_system/texts.dart';
 import 'package:bside_todolist/provider/auth_provider.dart';
@@ -79,195 +81,231 @@ class HomeScreen extends StatelessWidget {
     var name = kakaoAccount?.profile?.nickname;
     var profileUrl = kakaoAccount?.profile?.thumbnailImageUrl;
 
-    return Stack(
-      children: [
-        Container(
-          height: 200,
-          decoration: BoxDecoration(color: MyColors.starGreen),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 90,
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 13),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '일이삼사오육칠팔구십일이삼사오육',
-                      style: MyTexts.KRBold17.copyWith(
-                        color: Colors.white,
+    var subjects = [
+      Subject(
+          subjectId: 'abc',
+          subjectName: '전체 폴더',
+          subjectSize: 23123,
+          createdAt: '123',
+          modifiedAt: 'asdf'),
+      Subject(
+          subjectId: 'ab',
+          subjectName: '수학',
+          subjectSize: 100,
+          createdAt: '123',
+          modifiedAt: 'asdf'),
+      Subject(
+          subjectId: 'abcd',
+          subjectName: '영어',
+          subjectSize: 23,
+          createdAt: '123',
+          modifiedAt: 'asdf')
+    ];
+
+    return SingleChildScrollView(
+      child: Stack(
+        children: [
+          Container(
+            height: 200,
+            decoration: BoxDecoration(color: MyColors.starGreen),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  height: 90,
+                  padding: EdgeInsets.fromLTRB(16, 16, 16, 13),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '일이삼사오육칠팔구십일이삼사오육',
+                        style: MyTexts.KRBold17.copyWith(
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                    Column(
-                      children: [
-                        profileUrl != null
-                            ? CircleAvatar(
-                                radius: 16,
-                                backgroundImage: NetworkImage(profileUrl),
-                                backgroundColor: Colors.transparent,
-                              )
-                            : CircleAvatar(
-                                radius: 30.0,
-                                backgroundColor: Colors.transparent,
-                              ),
-                        SizedBox(height: 8),
-                        name != null
-                            ? Text(
-                                name,
-                                style: MyTexts.KRMedium14.copyWith(
-                                  color: Colors.white,
+                      Column(
+                        children: [
+                          profileUrl != null
+                              ? CircleAvatar(
+                                  radius: 16,
+                                  backgroundImage: NetworkImage(profileUrl),
+                                  backgroundColor: Colors.transparent,
+                                )
+                              : CircleAvatar(
+                                  radius: 30.0,
+                                  backgroundColor: Colors.transparent,
                                 ),
-                              )
-                            : Container()
-                      ],
-                    )
-                  ],
-                ),
-              )
-            ],
+                          SizedBox(height: 8),
+                          name != null
+                              ? Text(
+                                  name,
+                                  style: MyTexts.KRMedium14.copyWith(
+                                    color: Colors.white,
+                                  ),
+                                )
+                              : Container()
+                        ],
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-        ),
-        SingleChildScrollView(
-          child: Column(
+          Column(
             children: [
               SizedBox(height: 90),
-              SizedBox(
-                height: 900,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(16),
-                      topRight: Radius.circular(16),
-                    ),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(16),
+                    topRight: Radius.circular(16),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        color: MyColors.starGreen,
-                        child: Lottie.asset(
-                          'assets/splash.json',
-                          width: 400,
-                          height: 400,
-                        ),
-                      ),
-                      Container(
-                        padding: EdgeInsets.all(36),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(height: 95, width: 113),
-                            SizedBox(width: 36),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('수험생123 님을 위한', style: MyTexts.KRBold17),
-                                  Text('오늘의 퀴즈!', style: MyTexts.KRBold17),
-                                  SizedBox(height: 14),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: MyColors.starGreen,
-                                      shadowColor: Colors.transparent,
-                                      padding: EdgeInsets.all(8),
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(8), //
-                                        // <-- Radius
-                                      ),
-                                      minimumSize: Size(170, 37),
-                                    ),
-                                    onPressed: () => {},
-                                    child: Text(
-                                      '오늘의 퀴즈 풀기',
-                                      style: MyTexts.KRRegular14.copyWith(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('오답노트 ️🗂', style: MyTexts.KRBold17),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 16),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Row(
-                          children: [
-                            SizedBox(
-                              width: 150,
-                              height: 112,
-                              child: Container(
-                                color: Colors.red,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 150,
-                              height: 112,
-                              child: Container(
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: 56),
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: Text('퀴즈 만들기', style: MyTexts.KRBold17),
-                      ),
-                      SizedBox(height: 16),
-                      Container(
-                        width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 16),
-                        child: MyCardWrapper(
-                          borderRadius: 8,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: 24, horizontal: 40),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(36),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          SizedBox(height: 95, width: 113),
+                          SizedBox(width: 36),
+                          Expanded(
                             child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text('복습이 필요한 문제를'),
-                                Text('쏙쏙 골라서 나만의 시험을 만들어 보세요'),
-                                SizedBox(height: 16),
-                                MyButton(
+                                Text('수험생123 님을 위한', style: MyTexts.KRBold17),
+                                Text('오늘의 퀴즈!', style: MyTexts.KRBold17),
+                                SizedBox(height: 14),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: MyColors.starGreen,
+                                    shadowColor: Colors.transparent,
+                                    padding: EdgeInsets.all(8),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8), //
+                                      // <-- Radius
+                                    ),
+                                    minimumSize: Size(170, 37),
+                                  ),
+                                  onPressed: () => {},
                                   child: Text(
                                     '오늘의 퀴즈 풀기',
-                                    style: MyTexts.KRBold14,
+                                    style: MyTexts.KRRegular14.copyWith(
+                                      color: Colors.white,
+                                    ),
                                   ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('오답노트 ️🗂', style: MyTexts.KRBold17),
+                          Text('전체보기',
+                              style: MyTexts.KRRegular14.copyWith(
+                                color: MyColors.contentsSub,
+                              ))
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      height: 112,
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: ListView.separated(
+                        itemCount: subjects.length,
+                        separatorBuilder: (BuildContext context, int index) =>
+                            const SizedBox(width: 16),
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (BuildContext context, int index) {
+                          return MyCardWrapper(
+                            borderRadius: 5,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              width: 150,
+                              height: 112,
+                              child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    subjects[index]!.subjectName,
+                                    style: MyTexts.KR16700,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        subjects[index]!.subjectSize.toString(),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                    SizedBox(height: 56),
+                    Container(
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: Text('퀴즈 만들기 ✍️', style: MyTexts.KRBold17),
+                    ),
+                    SizedBox(height: 16),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      child: MyCardWrapper(
+                        borderRadius: 8,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 24, horizontal: 40),
+                          child: Column(
+                            children: [
+                              Text('복습이 필요한 문제를'),
+                              Text('쏙쏙 골라서 나만의 시험을 만들어 보세요'),
+                              SizedBox(height: 16),
+                              SizedBox(
+                                width: 260,
+                                child: MyButton(
+                                  child: Text('나만의 퀴즈 만들기'),
                                   onPressed: () {
                                     print('hello');
                                   },
                                   type: MyButtonType.starGreen,
-                                )
-                              ],
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
+                      ),
+                    ),
+                    SizedBox(height: 24),
+                  ],
                 ),
               ),
             ],
-          ),
-        )
-      ],
+          )
+        ],
+      ),
     );
   }
 }

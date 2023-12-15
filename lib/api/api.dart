@@ -47,3 +47,25 @@ class Token {
 
   Map<String, dynamic> toJson() => _$TokenToJson(this);
 }
+
+@JsonSerializable()
+class Subject {
+  const Subject({
+    required this.subjectId,
+    required this.subjectName,
+    required this.subjectSize,
+    required this.createdAt,
+    required this.modifiedAt,
+  });
+
+  factory Subject.fromJson(Map<String, dynamic> json) =>
+      _$SubjectFromJson(json);
+
+  final String subjectId;
+  final String subjectName;
+  final int subjectSize;
+  final String createdAt;
+  final String modifiedAt;
+
+  Map<String, dynamic> toJson() => _$SubjectToJson(this);
+}

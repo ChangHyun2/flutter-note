@@ -6,6 +6,7 @@ class MyColors {
   static const Color gray100 = Color(0xffFCFCFC);
   static const Color gray200 = Color(0xffEFEFEF);
   static const Color gray350 = Color(0xffC8C8C8);
+  static const Color contentsSub = Color(0xffC8C8C8);
   static const Color gray500 = Color(0xff949494);
   static const Color gray900 = Color(0xff111111);
 

@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
               top: 130,
               child: Container(
                 height: 370,
-                child: Lottie.asset('assets/login.json'),
+                child: Lottie.asset('assets/splash.json'),
               ),
             ),
             Positioned(
