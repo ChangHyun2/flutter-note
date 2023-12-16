@@ -1,10 +1,10 @@
-import 'package:bside_todolist/components/bottom_nav_bar.dart';
-import 'package:bside_todolist/provider/auth_provider.dart';
+import 'package:bside_todolist/common/components/bottom_nav_bar.dart';
+import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:bside_todolist/screen/cunning_document_scanner_screen.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
 import 'package:bside_todolist/screen/history_screen.dart';
-import 'package:bside_todolist/screen/login_screen.dart';
-import 'package:bside_todolist/screen/home.dart';
+import 'package:bside_todolist/login/login_screen.dart';
+import 'package:bside_todolist/home/home_screen.dart';
 import 'package:bside_todolist/screen/profile_screen.dart';
 import 'package:bside_todolist/screen/quiz_screen.dart';
 import 'package:bside_todolist/screen/photo_screen.dart';

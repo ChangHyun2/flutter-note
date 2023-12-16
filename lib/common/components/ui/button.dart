@@ -1,6 +1,6 @@
-import 'package:bside_todolist/design_system/box_shadow.dart';
-import 'package:bside_todolist/design_system/colors.dart';
-import 'package:bside_todolist/design_system/texts.dart';
+import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
+import 'package:bside_todolist/common/components/ui/system/colors.dart';
+import 'package:bside_todolist/common/components/ui/system/texts.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';

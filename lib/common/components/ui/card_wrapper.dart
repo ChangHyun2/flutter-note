@@ -1,5 +1,5 @@
-import 'package:bside_todolist/design_system/box_shadow.dart';
-import 'package:bside_todolist/design_system/colors.dart';
+import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
+import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
