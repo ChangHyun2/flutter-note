@@ -10,7 +10,7 @@ class HomeCreateQuiz extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 16),
-      child: MyCardWrapper(
+      child: CardWrapper(
         borderRadius: 8,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 24, horizontal: 40),

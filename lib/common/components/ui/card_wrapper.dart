@@ -3,14 +3,16 @@ import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class MyCardWrapper extends StatelessWidget {
+class CardWrapper extends StatelessWidget {
   final Widget child;
   final double borderRadius;
+  final bool? hasShadow;
 
-  const MyCardWrapper({
+  const CardWrapper({
     super.key,
     required this.child,
     required this.borderRadius,
+    this.hasShadow = false,
   });
 
   @override
@@ -18,7 +20,8 @@ class MyCardWrapper extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: MyColors.cardFill,
-        boxShadow: <BoxShadow>[MyBoxShadows.cardShadow],
+        boxShadow:
+            hasShadow == false ? null : <BoxShadow>[MyBoxShadows.cardShadow],
         border: Border.all(
           width: 1,
           color: MyColors.cardStroke,

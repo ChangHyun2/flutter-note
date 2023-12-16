@@ -57,7 +57,7 @@ class HomeFolders extends StatelessWidget {
                 const SizedBox(width: 16),
             scrollDirection: Axis.horizontal,
             itemBuilder: (BuildContext context, int index) {
-              return MyCardWrapper(
+              return CardWrapper(
                 borderRadius: 5,
                 child: Container(
                   padding: EdgeInsets.symmetric(

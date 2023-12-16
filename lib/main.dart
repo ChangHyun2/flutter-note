@@ -1,11 +1,12 @@
 import 'package:bside_todolist/common/components/bottom_nav_bar.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
+import 'package:bside_todolist/profile/edit/profile_edit_screen.dart';
 import 'package:bside_todolist/screen/cunning_document_scanner_screen.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
 import 'package:bside_todolist/screen/history_screen.dart';
 import 'package:bside_todolist/login/login_screen.dart';
 import 'package:bside_todolist/home/home_screen.dart';
-import 'package:bside_todolist/screen/profile_screen.dart';
+import 'package:bside_todolist/profile/profile_screen.dart';
 import 'package:bside_todolist/screen/quiz_screen.dart';
 import 'package:bside_todolist/screen/photo_screen.dart';
 import 'package:camera/camera.dart';
@@ -47,8 +48,12 @@ class MyApp extends StatelessWidget {
 
   MyApp({super.key, required this.camera});
 
+  final _navigatorKey = GlobalKey<NavigatorState>();
+  final _shellNavigatorKey = GlobalKey<NavigatorState>();
+
   GoRouter _router(camera) {
     return GoRouter(
+      navigatorKey: _navigatorKey,
       initialLocation: '/landing',
       routes: <RouteBase>[
         GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
@@ -78,14 +83,47 @@ class MyApp extends StatelessWidget {
                     return CunningDocumentScannerScreen();
                   }),
               GoRoute(
-                path: '/profile',
-                builder: (context, state) => ProfileScreen(),
-              ),
+                  path: '/profile',
+                  builder: (context, state) => ProfileScreen(),
+                  routes: [
+                    ShellRoute(
+                      parentNavigatorKey: _navigatorKey,
+                      builder: (BuildContext context, GoRouterState state,
+                          Widget child) {
+                        return SafeArea(
+                          child: Scaffold(
+                            appBar: AppBar(
+                              leading: IconButton(
+                                icon: Icon(Icons.chevron_left),
+                                onPressed: () {
+                                  context.pop();
+                                },
+                              ),
+                            ),
+                            resizeToAvoidBottomInset: false,
+                            body: child,
+                            bottomNavigationBar: null,
+                          ),
+                        );
+                      },
+                      routes: [
+                        GoRoute(
+                          path: 'edit',
+                          builder: (
+                            context,
+                            state,
+                          ) {
+                            return ProfileEditScreen();
+                          },
+                        ),
+                      ],
+                    ),
+                  ]),
               GoRoute(
                 path: '/history',
                 builder: (context, state) => HistoryScreen(),
               ),
-            ])
+            ]),
       ],
     );
   }
