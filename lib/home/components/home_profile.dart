@@ -47,11 +47,11 @@ class HomeProfile extends StatelessWidget {
                               backgroundImage: NetworkImage(profileUrl),
                               backgroundColor: Colors.transparent,
                             )
-                          : CircleAvatar(
+                          : const CircleAvatar(
                               radius: 30.0,
                               backgroundColor: Colors.transparent,
                             ),
-                      SizedBox(height: 8),
+                      const SizedBox(height: 8),
                       name != null
                           ? Text(
                               name,

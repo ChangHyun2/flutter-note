@@ -185,12 +185,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
         Container(
           child: Column(
             children: [
-              _selectedMode[0] ? Text('작성할 문제를 촬영해 주세요.') : Text(''),
+              _selectedMode[0]
+                  ? const Text('작성할 문제를 촬영해 주세요.')
+                  : const Text(''),
               ToggleButtons(
-                children: [
-                  Text('촬영'),
-                  Text('갤러리'),
-                ],
                 isSelected: _selectedMode,
                 onPressed: (int index) {
                   setState(() {
@@ -200,6 +198,10 @@ class _PhotoScreenState extends State<PhotoScreen> {
                     }
                   });
                 },
+                children: const [
+                  Text('촬영'),
+                  Text('갤러리'),
+                ],
               )
             ],
           ),

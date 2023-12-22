@@ -5,7 +5,7 @@ import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:bside_todolist/home/components/home_create_quiz.dart';
-import 'package:bside_todolist/home/components/home_folders.dart';
+import 'package:bside_todolist/home/components/home_subjects.dart';
 import 'package:bside_todolist/home/components/home_profile.dart';
 import 'package:bside_todolist/home/components/home_today_quiz.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,12 +25,12 @@ class HomeScreen extends StatelessWidget {
     return SingleChildScrollView(
       child: Stack(
         children: [
-          HomeProfile(),
+          const HomeProfile(),
           Column(
             children: [
-              SizedBox(height: 90),
+              const SizedBox(height: 90),
               Container(
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(16),
@@ -40,17 +40,17 @@ class HomeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    HomeTodayQuiz(),
-                    SizedBox(height: 20),
-                    HomeFolders(),
-                    SizedBox(height: 56),
+                    const HomeTodayQuiz(),
+                    const SizedBox(height: 20),
+                    const HomeSubjects(),
+                    const SizedBox(height: 56),
                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
-                      child: Text('퀴즈 만들기 ✍️', style: MyTexts.KRBold17),
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: const Text('퀴즈 만들기 ✍️', style: MyTexts.KRBold17),
                     ),
-                    SizedBox(height: 16),
-                    HomeCreateQuiz(),
-                    SizedBox(height: 24),
+                    const SizedBox(height: 16),
+                    const HomeCreateQuiz(),
+                    const SizedBox(height: 24),
                   ],
                 ),
               ),

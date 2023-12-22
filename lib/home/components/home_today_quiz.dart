@@ -9,24 +9,24 @@ class HomeTodayQuiz extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(36),
+      padding: const EdgeInsets.all(36),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: 95, width: 113),
-          SizedBox(width: 36),
+          const SizedBox(height: 95, width: 113),
+          const SizedBox(width: 36),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('수험생123 님을 위한', style: MyTexts.KRBold17),
-                Text('오늘의 퀴즈!', style: MyTexts.KRBold17),
-                SizedBox(height: 14),
+                const Text('수험생123 님을 위한', style: MyTexts.KRBold17),
+                const Text('오늘의 퀴즈!', style: MyTexts.KRBold17),
+                const SizedBox(height: 14),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: MyColors.starGreen,
                     shadowColor: Colors.transparent,
-                    padding: EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8), //
                       // <-- Radius

@@ -19,18 +19,19 @@ class ProfileUser extends StatelessWidget {
     var checkinDays = '3일';
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: CardWrapper(
+          borderRadius: 8,
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(16),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
                       children: [
-                        CircleAvatar(
+                        const CircleAvatar(
                           radius: 24,
                         ),
                         SizedBox(width: 16),
@@ -38,7 +39,7 @@ class ProfileUser extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              nickname == null ? '' : nickname,
+                              nickname ?? '',
                               style: MyTexts.KR14400.copyWith(
                                 fontWeight: FontWeight.w700,
                               ),
@@ -61,7 +62,8 @@ class ProfileUser extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(color: MyColors.cardStroke, thickness: 1, height: 1),
+              const Divider(
+                  color: MyColors.cardStroke, thickness: 1, height: 1),
               Row(
                 children: [
                   Expanded(
@@ -76,7 +78,7 @@ class ProfileUser extends StatelessWidget {
                       ),
                     ),
                   ),
-                  VerticalDivider(
+                  const VerticalDivider(
                     color: MyColors.cardStroke,
                     width: 1,
                     thickness: 1,
@@ -87,7 +89,7 @@ class ProfileUser extends StatelessWidget {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       child: Column(
                         children: [
-                          Text('⏱️ 누적 출석'),
+                          const Text('⏱️ 누적 출석'),
                           Text(checkinDays),
                         ],
                       ),
@@ -96,8 +98,7 @@ class ProfileUser extends StatelessWidget {
                 ],
               )
             ],
-          ),
-          borderRadius: 8),
+          )),
     );
   }
 }

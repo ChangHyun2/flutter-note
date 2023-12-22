@@ -12,14 +12,14 @@ class ScaffoldWithNavBar extends StatelessWidget {
 
   static int _calculateSelectedIndex(BuildContext context) {
     final String location = GoRouterState.of(context).uri.toString();
+    if (location.startsWith('/problems/create')) {
+      return 2;
+    }
     if (location.startsWith('/problems')) {
       return 0;
     }
-    if (location.startsWith('/quiz')) {
+    if (location.startsWith('/folders')) {
       return 1;
-    }
-    if (location.startsWith('/upload')) {
-      return 2;
     }
     if (location.startsWith('/profile')) {
       return 3;
@@ -33,10 +33,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
         GoRouter.of(context).go('/problems');
         break;
       case 1:
-        GoRouter.of(context).go('/quiz');
+        GoRouter.of(context).go('/folders');
         break;
       case 2:
-        GoRouter.of(context).go('/upload');
+        GoRouter.of(context).go('/problems/create');
         break;
       case 3:
         GoRouter.of(context).go('/profile');

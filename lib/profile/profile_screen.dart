@@ -20,26 +20,29 @@ class ProfileScreen extends StatelessWidget {
     String? nickname = authProvider.kakaoUser?.kakaoAccount?.profile?.nickname;
 
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(height: 32),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 16),
-            width: double.infinity,
-            child: Text(
-              '내정보',
-              style: MyTexts.KR24800,
+      child: Container(
+        color: Colors.white,
+        child: Column(
+          children: [
+            const SizedBox(height: 32),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              width: double.infinity,
+              child: const Text(
+                '내정보',
+                style: MyTexts.KR24800,
+              ),
             ),
-          ),
-          SizedBox(height: 12),
-          ProfileUser(),
-          SizedBox(height: 24),
-          ProfileFeedback(),
-          SizedBox(
-            height: 24,
-          ),
-          ProfileMenu(),
-        ],
+            const SizedBox(height: 12),
+            const ProfileUser(),
+            const SizedBox(height: 24),
+            const ProfileFeedback(),
+            const SizedBox(
+              height: 24,
+            ),
+            const ProfileMenu(),
+          ],
+        ),
       ),
     );
   }

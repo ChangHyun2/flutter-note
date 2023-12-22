@@ -66,6 +66,14 @@ class MyTexts {
     height: 1.5,
   );
 
+  static const TextStyle KR17700 = TextStyle(
+    color: MyColors.gray900,
+    fontWeight: FontWeight.w700,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 17,
+    height: 1.5,
+  );
+
   static const TextStyle KR24800 = TextStyle(
     color: Colors.black,
     fontWeight: FontWeight.w800,
@@ -77,6 +85,14 @@ class MyTexts {
   static const TextStyle KR14400 = TextStyle(
     color: MyColors.gray900,
     fontWeight: FontWeight.w400,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 14,
+    height: 1.5,
+  );
+
+  static const TextStyle KR14700 = TextStyle(
+    color: MyColors.gray900,
+    fontWeight: FontWeight.w700,
     fontFamily: 'Apple SD Gothic Neo',
     fontSize: 14,
     height: 1.5,

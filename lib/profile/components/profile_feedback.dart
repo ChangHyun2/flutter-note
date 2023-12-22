@@ -7,13 +7,13 @@ class ProfileFeedback extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(8)),
         color: Color(0xFFE3F97D),
       ),
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-      margin: EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16),
+      child: const Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Row(

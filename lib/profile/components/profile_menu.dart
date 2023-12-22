@@ -17,58 +17,60 @@ class ProfileMenu extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       children: [
-        Divider(
+        const Divider(
           thickness: 1,
           color: MyColors.cardStroke,
           height: 1,
         ),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: Text('의견 남기기', style: MyTexts.KR16700),
-          trailing: Icon(
+          title: const Text('의견 남기기', style: MyTexts.KR16700),
+          trailing: const Icon(
             Icons.chevron_right,
             color: MyColors.gray900,
           ),
           onTap: () {},
         ),
-        Divider(
+        const Divider(
           thickness: 1,
           color: MyColors.cardStroke,
           height: 1,
         ),
         ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: Text('현재 앱 버전', style: MyTexts.KR16700),
-          trailing: Icon(Icons.chevron_right, color: MyColors.gray900),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          title: const Text('현재 앱 버전', style: MyTexts.KR16700),
+          trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
           onTap: () {},
         ),
-        Divider(
+        const Divider(
           thickness: 1,
           color: MyColors.cardStroke,
           height: 1,
         ),
         ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: Text('서비스 약관', style: MyTexts.KR16700),
-          trailing: Icon(Icons.chevron_right, color: MyColors.gray900),
+          title: const Text('서비스 약관', style: MyTexts.KR16700),
+          trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
           onTap: () {},
         ),
-        Divider(
+        const Divider(
           thickness: 1,
           color: MyColors.cardStroke,
           height: 1,
         ),
         ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: Text('로그아웃', style: MyTexts.KR16700),
-          trailing: Icon(Icons.chevron_right, color: MyColors.gray900),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          title: const Text('로그아웃', style: MyTexts.KR16700),
+          trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
           onTap: () {
             authProvider.kakaoLogout().then((_) {
               context.go('/login');
             });
           },
         ),
-        Divider(
+        const Divider(
           thickness: 1,
           color: MyColors.cardStroke,
           height: 1,

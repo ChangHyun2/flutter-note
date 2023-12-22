@@ -1,6 +1,8 @@
 import 'package:bside_todolist/common/components/bottom_nav_bar.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
+import 'package:bside_todolist/questions/create/questions_create_screen.dart';
 import 'package:bside_todolist/profile/edit/profile_edit_screen.dart';
+import 'package:bside_todolist/quiz/quiz_create_screen.dart';
 import 'package:bside_todolist/screen/cunning_document_scanner_screen.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
 import 'package:bside_todolist/screen/history_screen.dart';
@@ -54,76 +56,120 @@ class MyApp extends StatelessWidget {
   GoRouter _router(camera) {
     return GoRouter(
       navigatorKey: _navigatorKey,
-      initialLocation: '/landing',
+      initialLocation: '/questions/create',
       routes: <RouteBase>[
         GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
         GoRoute(path: '/login', builder: (conext, state) => LoginScreen()),
         ShellRoute(
-            builder: (BuildContext context, GoRouterState state, Widget child) {
-              return SafeArea(
-                child: Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body: child,
-                  bottomNavigationBar: ScaffoldWithNavBar(child: child),
-                ),
-              );
-            },
-            routes: [
-              GoRoute(
-                path: '/problems',
-                builder: (context, state) => HomeScreen(),
+          builder: (BuildContext context, GoRouterState state, Widget child) {
+            return SafeArea(
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                body: child,
+                bottomNavigationBar: ScaffoldWithNavBar(child: child),
               ),
-              GoRoute(
-                path: '/quiz',
-                builder: (context, state) => QuizScreen(),
-              ),
-              GoRoute(
-                  path: '/upload',
-                  builder: (context, state) {
-                    return CunningDocumentScannerScreen();
-                  }),
-              GoRoute(
-                  path: '/profile',
-                  builder: (context, state) => ProfileScreen(),
+            );
+          },
+          routes: [
+            GoRoute(
+              path: '/questions',
+              builder: (context, state) => const HomeScreen(),
+              routes: [
+                ShellRoute(
+                  parentNavigatorKey: _navigatorKey,
+                  builder: (BuildContext context, GoRouterState state,
+                      Widget child) {
+                    return child;
+                  },
                   routes: [
-                    ShellRoute(
-                      parentNavigatorKey: _navigatorKey,
-                      builder: (BuildContext context, GoRouterState state,
-                          Widget child) {
-                        return SafeArea(
-                          child: Scaffold(
-                            appBar: AppBar(
-                              leading: IconButton(
-                                icon: Icon(Icons.chevron_left),
-                                onPressed: () {
-                                  context.pop();
-                                },
-                              ),
-                            ),
-                            resizeToAvoidBottomInset: false,
-                            body: child,
-                            bottomNavigationBar: null,
-                          ),
-                        );
+                    GoRoute(
+                      path: 'create',
+                      builder: (context, state) {
+                        return const QuestionsCreateScreen();
                       },
-                      routes: [
-                        GoRoute(
-                          path: 'edit',
-                          builder: (
-                            context,
-                            state,
-                          ) {
-                            return ProfileEditScreen();
-                          },
-                        ),
-                      ],
                     ),
-                  ]),
-              GoRoute(
-                path: '/history',
-                builder: (context, state) => HistoryScreen(),
-              ),
-            ]),
+                  ],
+                ),
+              ],
+            ),
+            GoRoute(
+              path: '/folders',
+              builder: (context, state) => QuizScreen(),
+              routes: [
+                ShellRoute(
+                  parentNavigatorKey: _navigatorKey,
+                  builder: (BuildContext context, GoRouterState state,
+                      Widget child) {
+                    return SafeArea(
+                      child: Scaffold(
+                        appBar: AppBar(
+                          leading: IconButton(
+                            icon: Icon(Icons.chevron_left),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          ),
+                        ),
+                        resizeToAvoidBottomInset: false,
+                        body: child,
+                        bottomNavigationBar: null,
+                      ),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'create',
+                      builder: (
+                        context,
+                        state,
+                      ) {
+                        return QuizCreateScreen();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            GoRoute(
+              path: '/profile',
+              builder: (context, state) => ProfileScreen(),
+              routes: [
+                ShellRoute(
+                  parentNavigatorKey: _navigatorKey,
+                  builder: (BuildContext context, GoRouterState state,
+                      Widget child) {
+                    return SafeArea(
+                      child: Scaffold(
+                        appBar: AppBar(
+                          leading: IconButton(
+                            icon: Icon(Icons.chevron_left),
+                            onPressed: () {
+                              context.pop();
+                            },
+                          ),
+                        ),
+                        resizeToAvoidBottomInset: false,
+                        body: child,
+                        bottomNavigationBar: null,
+                      ),
+                    );
+                  },
+                  routes: [
+                    GoRoute(
+                      path: 'edit',
+                      builder: (
+                        context,
+                        state,
+                      ) {
+                        return ProfileEditScreen();
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ],
+        ),
       ],
     );
   }

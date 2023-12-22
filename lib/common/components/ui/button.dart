@@ -14,9 +14,9 @@ class MyButtonType {
 
 Map<String, ButtonStyle> myButtonStyle = {
   'starGreen': ElevatedButton.styleFrom(
-    foregroundColor: MyColors.starGreen,
-    backgroundColor: Colors.white,
-    textStyle: MyTexts.KRBold14,
+    foregroundColor: Colors.white,
+    backgroundColor: MyColors.starGreen,
+    textStyle: MyTexts.KRBold14.copyWith(color: Colors.white),
     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(8.0),
@@ -40,11 +40,6 @@ class MyButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(this.type);
-    print(type);
-    print(myButtonStyle);
-    print(myButtonStyle[type]);
-
     return ElevatedButton(
       onPressed: onPressed,
       style: myButtonStyle[type],

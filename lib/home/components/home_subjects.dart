@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import '../../common/components/ui/system/colors.dart';
 
-class HomeFolders extends StatelessWidget {
-  const HomeFolders({super.key});
+class HomeSubjects extends StatelessWidget {
+  const HomeSubjects({super.key});
 
   @override
   Widget build(BuildContext context) {
