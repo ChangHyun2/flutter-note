@@ -2,17 +2,18 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 import 'package:bside_todolist/api/apiClient.dart';
+import 'package:bside_todolist/common/constants/star_shared_preferences_keys.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../api/api.dart';
 
 class AuthProvider extends ChangeNotifier {
   User? _kakaoUser;
-  String? _starAccessToken;
 
   set kakaoUser(User? kakaoUser) {
     _kakaoUser = kakaoUser;
@@ -21,7 +22,6 @@ class AuthProvider extends ChangeNotifier {
   }
 
   User? get kakaoUser => _kakaoUser;
-  String? get starAccessToken => _starAccessToken;
 
   Future<User?> kakaoCheckUser() async {
     try {
@@ -59,16 +59,29 @@ class AuthProvider extends ChangeNotifier {
       User user = await UserApi.instance.me();
       if (user.kakaoAccount != null) {
         final kakaoAccount = user.kakaoAccount!;
+        print('star login start');
         PostAuthKakaoRequest postAuthKakaoRequest = await PostAuthKakaoRequest(
             id: user.id,
             email: kakaoAccount.email!,
             nickname: kakaoAccount.profile!.nickname!,
             profileUrl: kakaoAccount.profile!.thumbnailImageUrl!);
+        print('star login success');
 
         var value = await getApiClient().postAuthKakao(postAuthKakaoRequest);
 
-        _starAccessToken = value.data.accessToken;
-        print(_starAccessToken);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+
+        prefs.setInt(StarSharedPreferencesKeys.kakaoId, user.id);
+        prefs.setString(
+            StarSharedPreferencesKeys.kakaoEmail, kakaoAccount.email!);
+        prefs.setString(StarSharedPreferencesKeys.kakaoNickname,
+            kakaoAccount.profile!.nickname!);
+        prefs.setString(StarSharedPreferencesKeys.kakaoProfileUrl,
+            kakaoAccount.profile!.thumbnailImageUrl!);
+
+        prefs.setString(
+            StarSharedPreferencesKeys.starAccessToken, value.data.accessToken);
+        print(value.data.accessToken);
       }
     } catch (error) {
       print('star login failure');

@@ -1,6 +1,7 @@
 import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:lottie/lottie.dart';
 import 'package:provider/provider.dart';
 
@@ -16,15 +17,22 @@ class _LandingScreenState extends State<LandingScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var authProvider = Provider.of<AuthProvider>(context, listen: false);
-      authProvider.kakaoCheckUser().then((kakaoUser) {
-        if (kakaoUser != null) {
+
+      User? kakaoUser = await authProvider.kakaoCheckUser();
+
+      if (kakaoUser != null) {
+        try {
+          await authProvider.starLogin();
+
           context.go('/questions');
-        } else {
+        } catch (error) {
           context.go('/login');
         }
-      });
+      } else {
+        context.go('/login');
+      }
     });
   }
 
