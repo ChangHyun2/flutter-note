@@ -78,33 +78,22 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       onPressed: () async {
-                        var kakaoUser = await auth.kakaoLogin();
+                        print('kakao login start');
+                        await auth.kakaoLogin();
+                        print('kakao login success');
 
                         User user = await UserApi.instance.me();
 
                         if (user.kakaoAccount != null) {
-                          final kakaoAccount = user.kakaoAccount!;
-
-                          print(kakaoAccount.toString());
-                          PostAuthKakaoRequest postAuthKakaoRequest =
-                              PostAuthKakaoRequest(
-                                  id: user.id,
-                                  email: kakaoAccount.email!,
-                                  nickname: kakaoAccount.profile!.nickname!,
-                                  profileUrl:
-                                      kakaoAccount.profile!.thumbnailImageUrl!);
-
-                          print(postAuthKakaoRequest.toJson());
-
-                          apiClient
-                              .postAuthKakao(postAuthKakaoRequest)
-                              .then((value) {
-                            print(value.response.statusCode);
-                            print(value.data);
-                            context.go('/problems');
-                          }).catchError((e) {
-                            print(e.toString());
-                          });
+                          try {
+                            print('star login start');
+                            await auth.starLogin();
+                            print('star login success');
+                            context.go('/questions');
+                          } catch (error) {
+                            print('login failure');
+                            print(error.toString());
+                          }
                         }
                       },
                       child: const Text(

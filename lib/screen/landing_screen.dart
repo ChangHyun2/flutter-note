@@ -20,7 +20,7 @@ class _LandingScreenState extends State<LandingScreen> {
       var authProvider = Provider.of<AuthProvider>(context, listen: false);
       authProvider.kakaoCheckUser().then((kakaoUser) {
         if (kakaoUser != null) {
-          context.go('/problems');
+          context.go('/questions');
         } else {
           context.go('/login');
         }

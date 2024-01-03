@@ -1,14 +1,18 @@
 // Copyright 2019 The Flutter team. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
+import 'package:bside_todolist/api/apiClient.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
+import '../../api/api.dart';
+
 class AuthProvider extends ChangeNotifier {
   User? _kakaoUser;
+  String? _starAccessToken;
 
   set kakaoUser(User? kakaoUser) {
     _kakaoUser = kakaoUser;
@@ -17,6 +21,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   User? get kakaoUser => _kakaoUser;
+  String? get starAccessToken => _starAccessToken;
 
   Future<User?> kakaoCheckUser() async {
     try {
@@ -47,6 +52,29 @@ class AuthProvider extends ChangeNotifier {
     await UserApi.instance.logout();
     kakaoUser = null;
     return kakaoUser;
+  }
+
+  Future starLogin() async {
+    try {
+      User user = await UserApi.instance.me();
+      if (user.kakaoAccount != null) {
+        final kakaoAccount = user.kakaoAccount!;
+        PostAuthKakaoRequest postAuthKakaoRequest = await PostAuthKakaoRequest(
+            id: user.id,
+            email: kakaoAccount.email!,
+            nickname: kakaoAccount.profile!.nickname!,
+            profileUrl: kakaoAccount.profile!.thumbnailImageUrl!);
+
+        var value = await getApiClient().postAuthKakao(postAuthKakaoRequest);
+
+        _starAccessToken = value.data.accessToken;
+        print(_starAccessToken);
+      }
+    } catch (error) {
+      print('star login failure');
+      print(error.toString());
+      rethrow;
+    }
   }
 
   Future kakaoLogin() async {

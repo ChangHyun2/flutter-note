@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
   GoRouter _router(camera) {
     return GoRouter(
       navigatorKey: _navigatorKey,
-      initialLocation: '/questions/create',
+      initialLocation: '/landing',
       routes: <RouteBase>[
         GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
         GoRoute(path: '/login', builder: (conext, state) => LoginScreen()),
