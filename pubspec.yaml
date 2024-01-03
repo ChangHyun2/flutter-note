@@ -54,6 +54,7 @@ dependencies:
   logger: any  #for logging purpose
   json_annotation: ^4.8.1
   carousel_slider: ^4.2.1
+  flutter_keyboard_visibility: ^6.0.0
 
 dev_dependencies:
   flutter_test:
