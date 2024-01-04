@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:bside_todolist/common/components/document_scanner.dart';
 import 'package:bside_todolist/common/components/ui/button.dart';
+import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
@@ -19,9 +20,11 @@ class QuestionsCreateScreen extends StatefulWidget {
 
 class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
   List<String> _problemPictures = [];
+  List<String> _keywords = [];
   var _titleController = TextEditingController();
   var _answerController = TextEditingController();
   var _memoController = TextEditingController();
+  var _keywordController = TextEditingController();
   var _questionType = 0;
   var _incorrectReason = 0;
   var _difficultType = 0;
@@ -427,6 +430,104 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 24),
+                            const Text('키워드', style: MyTexts.KR14700),
+                            SizedBox(height: _keywords.isEmpty ? 0 : 16),
+                            Container(
+                              margin: EdgeInsets.only(left: 8),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      children: _keywords
+                                          .map(
+                                            (keyword) => CardWrapper(
+                                              borderRadius: 100,
+                                              child: Container(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    16, 0, 8, 0),
+                                                child: Row(
+                                                  children: [
+                                                    Text(
+                                                      keyword,
+                                                      style: MyTexts.KR14400
+                                                          .copyWith(
+                                                        color:
+                                                            MyColors.starGreen,
+                                                      ),
+                                                    ),
+                                                    InkWell(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          _keywords = _keywords
+                                                              .where(
+                                                                  (_keyword) =>
+                                                                      _keyword !=
+                                                                      keyword)
+                                                              .toList();
+                                                        });
+                                                      },
+                                                      child: Container(
+                                                        width: 24,
+                                                        height: 24,
+                                                        child: Center(
+                                                          child: Icon(
+                                                            Icons.clear,
+                                                            size: 16,
+                                                            color: MyColors
+                                                                .gray500,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                          .toList(),
+                                    ),
+                                  ),
+                                  TextFormField(
+                                    controller: _keywordController,
+                                    onEditingComplete: () {
+                                      setState(() {
+                                        _keywords = [
+                                          ..._keywords,
+                                          _keywordController.value.text
+                                        ].toSet().toList();
+                                        _keywordController.clear();
+                                      });
+                                      print('editing complete');
+                                    },
+                                    decoration: InputDecoration(
+                                      hintText: '키워드를 등록해보세요',
+                                      border: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: MyColors.starGreen),
+                                      ),
+                                      enabledBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: MyColors.starGreen),
+                                      ),
+                                      focusedBorder: const UnderlineInputBorder(
+                                        borderSide: BorderSide(
+                                            color: MyColors.starGreen),
+                                      ),
+                                      suffixIcon: IconButton(
+                                        onPressed: _keywordController.clear,
+                                        icon: const Icon(
+                                          Icons.clear_rounded,
+                                          color: MyColors.starGreen,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
                             const SizedBox(height: 22),
                             Row(children: [
                               const Text('폴더 선택', style: MyTexts.KR14700),
@@ -485,35 +586,32 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                   ),
                 ),
               ),
-              KeyboardVisibilityBuilder(builder: (context, visible) {
-                if (visible) {
-                  return Text('');
-                }
-
-                return Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(16),
-                        topRight: Radius.circular(16),
+              MediaQuery.of(context).viewInsets.bottom == 0
+                  ? Positioned(
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(16),
+                            topRight: Radius.circular(16),
+                          ),
+                          boxShadow: [MyBoxShadows.bottomShadow],
+                        ),
+                        height: 64,
+                        width: double.infinity,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 35, vertical: 11),
+                        child: MyButton(
+                          onPressed: () {},
+                          type: MyButtonType.starGreen,
+                          child: Text('문제와 해설 등록하기'),
+                        ),
                       ),
-                      boxShadow: [MyBoxShadows.bottomShadow],
-                    ),
-                    height: 64,
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 35, vertical: 11),
-                    child: MyButton(
-                      onPressed: () {},
-                      type: MyButtonType.starGreen,
-                      child: Text('문제와 해설 등록하기'),
-                    ),
-                  ),
-                );
-              }),
+                    )
+                  : Text(''),
             ],
           ),
           bottomNavigationBar: null,
