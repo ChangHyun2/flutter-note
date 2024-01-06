@@ -1,15 +1,34 @@
 import 'dart:io';
-import 'package:bside_todolist/common/components/document_scanner.dart';
+import 'package:bside_todolist/api/api.dart';
+import 'package:bside_todolist/api/apiClient.dart';
 import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
+import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
+import 'package:provider/provider.dart';
+
+Map<int, String> questionTypes = {0: '주관식', 1: '객관식'};
+
+Map<int, String> difficultTypes = {
+  0: '하',
+  1: '중',
+  2: '상',
+};
+
+Map<int, String> incorrectReasons = {
+  0: '개념 이해 부족',
+  1: '시간 관리 부족',
+  2: '단순 실수',
+};
 
 class QuestionsCreateScreen extends StatefulWidget {
   const QuestionsCreateScreen({Key? key}) : super(key: key);
@@ -19,8 +38,16 @@ class QuestionsCreateScreen extends StatefulWidget {
 }
 
 class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
-  List<String> _problemPictures = [];
+  List<String> _questionPictures = [];
+  List<String> _answerPictures = [];
   List<String> _keywords = [];
+  Map<String, String?> _answers = {
+    '1': null,
+    '2': null,
+    '3': null,
+    '4': null,
+    '5': null,
+  };
   var _titleController = TextEditingController();
   var _answerController = TextEditingController();
   var _memoController = TextEditingController();
@@ -37,6 +64,148 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {}
+
+  void submit(BuildContext context) async {
+    var getSubjectsResponse = await getApiClient().getSubjects();
+
+    // validate form values
+    print('start');
+    print(_titleController.text);
+    print(_memoController.text);
+
+    var correctAnswers = _questionType == 0
+        ? [_answerController.text]
+        : _answers.values.whereType<String>().toList();
+
+    print(correctAnswers);
+
+    // post imagese
+    final List<MultipartFile> answerImages = [
+      for (var picture in _answerPictures)
+        MultipartFile.fromBytes(
+          File(picture).readAsBytesSync(),
+          filename: picture,
+          contentType: MediaType('application', 'octet-stream'),
+        )
+    ];
+
+    final List<MultipartFile> questionImages = [
+      for (var picture in _questionPictures)
+        MultipartFile.fromBytes(
+          File(picture).readAsBytesSync(),
+          filename: picture,
+          contentType: MediaType('application', 'octet-stream'),
+        )
+    ];
+
+    var postImagesRseponse = await getApiClient().postImages(
+      answerImages,
+      questionImages,
+      null,
+      context.read<AuthProvider>().kakaoUser!.id.toString(),
+    );
+
+    var answerImageUrls = postImagesRseponse.data.answerImageUrls;
+    var questionImageUrls = postImagesRseponse.data.questionImageUrls;
+
+    var postQuestionsResponse = await getApiClient().postQuestions(
+      PostQuestionsRequest(
+        subjectName: '기본 폴더',
+        title: _titleController.text,
+        questionType: questionTypes[_questionType]!,
+        difficultyType: difficultTypes[_difficultType]!,
+        memo: _memoController.text,
+        correctAnswers: correctAnswers,
+        incorrectReason: incorrectReasons[_incorrectReason]!,
+        keywords: _keywords,
+        questionImageUrls: questionImageUrls,
+        answerImageUrls: answerImageUrls,
+      ),
+    );
+  }
+
+  Widget buildFolderDropdownMenu() {
+    return FutureBuilder(
+      future: getApiClient().getSubjects(),
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return DropdownMenu(
+            width: MediaQuery.of(context).size.width - 32,
+            initialSelection: '기본 폴더',
+            dropdownMenuEntries: [
+              DropdownMenuEntry(
+                value: '기본 폴더',
+                label: '기본 폴더',
+              ),
+            ],
+          );
+        } else if (snapshot.hasError) {
+          return DropdownMenu(
+            width: MediaQuery.of(context).size.width - 32,
+            initialSelection: '기본 폴더',
+            dropdownMenuEntries: [
+              DropdownMenuEntry(
+                value: '기본 폴더',
+                label: '기본 폴더',
+              ),
+            ],
+          );
+        } else {
+          return DropdownMenu(
+            width: MediaQuery.of(context).size.width - 32,
+            initialSelection: '기본 폴더',
+            dropdownMenuEntries: snapshot.data!.data.subjects
+                .sublist(1)
+                .map(
+                  (subject) => DropdownMenuEntry(
+                      value: subject.subjectName, label: subject.subjectName),
+                )
+                .toList(),
+          );
+        }
+      },
+    );
+  }
+
+  Widget buildAnswerRadio(String index) {
+    return OutlinedButton(
+      onPressed: () {
+        setState(() {
+          var newAnswers = {..._answers};
+          print(newAnswers.toString());
+          if (newAnswers[index] == null) {
+            newAnswers[index] = index;
+          } else {
+            newAnswers[index] = null;
+          }
+          print(newAnswers.toString());
+          _answers = newAnswers;
+        });
+      },
+      style: OutlinedButton.styleFrom(
+        foregroundColor: Colors.white,
+        shape: CircleBorder(),
+        backgroundColor: Colors.white,
+        padding: EdgeInsets.all(0),
+        maximumSize: Size(24, 24),
+        minimumSize: Size(24, 24),
+        side: BorderSide(
+          width: 2,
+          color: _answers[index] == null
+              ? MyColors.blackBasic
+              : MyColors.starGreen,
+        ),
+      ),
+      child: Text(
+        index,
+        style: MyTexts.KR14700.copyWith(
+            color: _answers[index] == null
+                ? MyColors.blackBasic
+                : MyColors.starGreen,
+            fontSize: 15),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +239,56 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 12),
-                            DocumentScanner(title: '문제를 등록해 보세요', height: 360),
+                            // problem document scanner
+                            InkWell(
+                              onTap: () async {
+                                List<String> pictures;
+
+                                try {
+                                  pictures =
+                                      await CunningDocumentScanner.getPictures(
+                                              true) ??
+                                          [];
+
+                                  if (!mounted) return;
+
+                                  setState(() {
+                                    _questionPictures = pictures;
+                                  });
+                                } catch (exception) {
+                                  print(exception);
+                                  // Handle exception here
+                                }
+                              },
+                              child: CardWrapper(
+                                borderRadius: 4,
+                                child: Container(
+                                  height: 360,
+                                  width: double.infinity,
+                                  child: _questionPictures.isEmpty
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.camera_alt_outlined,
+                                              color: MyColors.starGreen,
+                                              size: 24,
+                                            ),
+                                            SizedBox(height: 26),
+                                            Text('문제를 등록해 보세요'),
+                                          ],
+                                        )
+                                      : Column(
+                                          children: [
+                                            for (var picture
+                                                in _questionPictures)
+                                              Image.file(File(picture))
+                                          ],
+                                        ),
+                                ),
+                              ),
+                            ),
                             const SizedBox(height: 24),
                             const Text('문제 정보', style: MyTexts.KR17700),
                             const SizedBox(height: 24),
@@ -167,31 +385,43 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             ]),
                             Container(
                               margin: EdgeInsets.only(left: 8),
-                              child: TextFormField(
-                                controller: _answerController,
-                                decoration: InputDecoration(
-                                  hintText: '주관식 답을 입력해주세요',
-                                  border: const UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: MyColors.starGreen),
-                                  ),
-                                  enabledBorder: const UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: MyColors.starGreen),
-                                  ),
-                                  focusedBorder: const UnderlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: MyColors.starGreen),
-                                  ),
-                                  suffixIcon: IconButton(
-                                    onPressed: _answerController.clear,
-                                    icon: const Icon(
-                                      Icons.clear_rounded,
-                                      color: MyColors.starGreen,
+                              child: _questionType == 0
+                                  ? TextFormField(
+                                      controller: _answerController,
+                                      decoration: InputDecoration(
+                                        hintText: '주관식 답을 입력해주세요',
+                                        border: const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: MyColors.starGreen),
+                                        ),
+                                        enabledBorder:
+                                            const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: MyColors.starGreen),
+                                        ),
+                                        focusedBorder:
+                                            const UnderlineInputBorder(
+                                          borderSide: BorderSide(
+                                              color: MyColors.starGreen),
+                                        ),
+                                        suffixIcon: IconButton(
+                                          onPressed: _answerController.clear,
+                                          icon: const Icon(
+                                            Icons.clear_rounded,
+                                            color: MyColors.starGreen,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : Row(
+                                      children: [
+                                        buildAnswerRadio('1'),
+                                        buildAnswerRadio('2'),
+                                        buildAnswerRadio('3'),
+                                        buildAnswerRadio('4'),
+                                        buildAnswerRadio('5'),
+                                      ],
                                     ),
-                                  ),
-                                ),
-                              ),
                             ),
                             const SizedBox(height: 40),
                             const Text('오답 정보', style: MyTexts.KR17700),
@@ -399,7 +629,55 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             const SizedBox(height: 28),
                             const Text('해설 등록', style: MyTexts.KR14700),
                             const SizedBox(height: 16),
-                            DocumentScanner(title: '해설을 등록해 보세요', height: 140),
+                            // problem document scanner
+                            InkWell(
+                              onTap: () async {
+                                List<String> pictures;
+
+                                try {
+                                  pictures =
+                                      await CunningDocumentScanner.getPictures(
+                                              true) ??
+                                          [];
+
+                                  if (!mounted) return;
+
+                                  setState(() {
+                                    _answerPictures = pictures;
+                                  });
+                                } catch (exception) {
+                                  print(exception);
+                                  // Handle exception here
+                                }
+                              },
+                              child: CardWrapper(
+                                borderRadius: 4,
+                                child: Container(
+                                  height: 140,
+                                  width: double.infinity,
+                                  child: _answerPictures.isEmpty
+                                      ? Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.camera_alt_outlined,
+                                              color: MyColors.starGreen,
+                                              size: 24,
+                                            ),
+                                            SizedBox(height: 26),
+                                            Text('해설을 등록해 보세요'),
+                                          ],
+                                        )
+                                      : Column(
+                                          children: [
+                                            for (var picture in _answerPictures)
+                                              Image.file(File(picture))
+                                          ],
+                                        ),
+                                ),
+                              ),
+                            ),
                             const SizedBox(height: 24),
                             const Text('메모', style: MyTexts.KR14700),
                             Container(
@@ -538,20 +816,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                               ),
                             ]),
                             SizedBox(height: 16),
-                            Container(
-                              child: DropdownMenu(
-                                width: MediaQuery.of(context).size.width - 32,
-                                initialSelection: 1,
-                                dropdownMenuEntries: [
-                                  DropdownMenuEntry(
-                                    value: 1,
-                                    label: '폴더1',
-                                  ),
-                                  DropdownMenuEntry(value: 2, label: '폴더2'),
-                                  DropdownMenuEntry(value: 3, label: '폴더3')
-                                ],
-                              ),
-                            ),
+                            buildFolderDropdownMenu(),
                             SizedBox(height: 40),
                             const SizedBox(height: 64),
                           ],
@@ -573,7 +838,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             padding: EdgeInsets.symmetric(
                                 horizontal: 35, vertical: 11),
                             child: MyButton(
-                              onPressed: () {},
+                              onPressed: () => submit(context),
                               type: MyButtonType.starGreen,
                               child: Text('문제와 해설 등록하기'),
                             ),
@@ -605,7 +870,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 35, vertical: 11),
                         child: MyButton(
-                          onPressed: () {},
+                          onPressed: () => submit(context),
                           type: MyButtonType.starGreen,
                           child: Text('문제와 해설 등록하기'),
                         ),
@@ -628,7 +893,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
       print('end');
       if (!mounted) return;
       setState(() {
-        _problemPictures = pictures;
+        _questionPictures = pictures;
       });
     } catch (exception) {
       print(exception);

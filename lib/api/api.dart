@@ -15,6 +15,129 @@ abstract class RestClient {
   Future<HttpResponse<Token>> postAuthKakao(
     @Body() PostAuthKakaoRequest request,
   );
+
+  @POST('/images')
+  @MultiPart()
+  Future<HttpResponse<PostImagesResponse>> postImages(
+    @Part() List<MultipartFile>? questionImages,
+    @Part() List<MultipartFile>? answerImages,
+    @Part() List<MultipartFile>? profileImage,
+    @Part() String kakaoId,
+  );
+
+  @POST('/questions')
+  Future<HttpResponse<PostQuestionsResponse>> postQuestions(
+    @Body() PostQuestionsRequest request,
+  );
+
+  @GET('/subjects')
+  Future<HttpResponse<GetSubjectsResponse>> getSubjects();
+}
+
+@JsonSerializable()
+class GetSubjectsResponse {
+  const GetSubjectsResponse({
+    required this.subjects,
+  });
+
+  factory GetSubjectsResponse.fromJson(Map<String, dynamic> json) =>
+      _$GetSubjectsResponseFromJson(json);
+
+  final List<Subject> subjects;
+
+  Map<String, dynamic> toJson() => _$GetSubjectsResponseToJson(this);
+}
+
+@JsonSerializable()
+class PostQuestionsResponse {
+  const PostQuestionsResponse({
+    required this.id,
+    required this.subjectName,
+    required this.title,
+    required this.questionType,
+    required this.difficultyType,
+    required this.memo,
+    required this.correctAnswers,
+    required this.reason,
+    required this.keywords,
+    required this.questionImageUrls,
+    required this.answerImageUrls,
+    required this.questionCreatedAt,
+    required this.questionModifiedAt,
+    required this.answerCreatedAt,
+    required this.answerModifiedAt,
+  });
+
+  factory PostQuestionsResponse.fromJson(Map<String, dynamic> json) =>
+      _$PostQuestionsResponseFromJson(json);
+
+  final String id;
+  final String subjectName;
+  final String title;
+  final String questionType;
+  final String difficultyType;
+  final String memo;
+  final List<String> correctAnswers;
+  final String reason;
+  final List<String> keywords;
+  final List<String> questionImageUrls;
+  final List<String> answerImageUrls;
+  final String questionCreatedAt;
+  final String questionModifiedAt;
+  final String answerCreatedAt;
+  final String answerModifiedAt;
+
+  Map<String, dynamic> toJson() => _$PostQuestionsResponseToJson(this);
+}
+
+@JsonSerializable()
+class PostQuestionsRequest {
+  const PostQuestionsRequest({
+    required this.subjectName,
+    required this.title,
+    required this.questionType,
+    required this.difficultyType,
+    required this.memo,
+    required this.correctAnswers,
+    required this.incorrectReason,
+    required this.keywords,
+    required this.questionImageUrls,
+    required this.answerImageUrls,
+  });
+
+  factory PostQuestionsRequest.fromJson(Map<String, dynamic> json) =>
+      _$PostQuestionsRequestFromJson(json);
+
+  final String subjectName;
+  final String title;
+  final String questionType;
+  final String difficultyType;
+  final String memo;
+  final List<String> correctAnswers;
+  final String incorrectReason;
+  final List<String> keywords;
+  final List<String> questionImageUrls;
+  final List<String> answerImageUrls;
+
+  Map<String, dynamic> toJson() => _$PostQuestionsRequestToJson(this);
+}
+
+@JsonSerializable()
+class PostImagesResponse {
+  const PostImagesResponse({
+    required this.questionImageUrls,
+    required this.answerImageUrls,
+    required this.profileUrl,
+  });
+
+  factory PostImagesResponse.fromJson(Map<String, dynamic> json) =>
+      _$PostImagesResponseFromJson(json);
+
+  final List<String> questionImageUrls;
+  final List<String> answerImageUrls;
+  final String profileUrl;
+
+  Map<String, dynamic> toJson() => _$PostImagesResponseToJson(this);
 }
 
 @JsonSerializable()
