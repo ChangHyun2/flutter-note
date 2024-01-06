@@ -12,28 +12,28 @@ class SubjectsProvider extends ChangeNotifier {
     await Future.delayed(const Duration(seconds: 1));
 
     return [
-      Subject(
+      const Subject(
         subjectId: '0',
         subjectName: 'root',
         subjectSize: 0,
         createdAt: '123',
         modifiedAt: '123',
       ),
-      Subject(
+      const Subject(
         subjectId: '1',
         subjectName: 'root1',
         subjectSize: 0,
         createdAt: '123',
         modifiedAt: '123',
       ),
-      Subject(
+      const Subject(
         subjectId: '2',
         subjectName: 'root2',
         subjectSize: 0,
         createdAt: '123',
         modifiedAt: '123',
       ),
-      Subject(
+      const Subject(
         subjectId: '3',
         subjectName: 'root3',
         subjectSize: 0,

@@ -34,7 +34,7 @@ class ProfileUser extends StatelessWidget {
                         const CircleAvatar(
                           radius: 24,
                         ),
-                        SizedBox(width: 16),
+                        const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -53,7 +53,7 @@ class ProfileUser extends StatelessWidget {
                       ],
                     ),
                     IconButton(
-                      icon: Icon(Icons.chevron_right),
+                      icon: const Icon(Icons.chevron_right),
                       onPressed: () {
                         print('helol');
                         context.go('/profile/edit');
@@ -69,10 +69,10 @@ class ProfileUser extends StatelessWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Column(
                         children: [
-                          Text('⏱️ 총 복습 시간'),
+                          const Text('⏱️ 총 복습 시간'),
                           Text(reviewTimes),
                         ],
                       ),
@@ -86,7 +86,7 @@ class ProfileUser extends StatelessWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Column(
                         children: [
                           const Text('⏱️ 누적 출석'),

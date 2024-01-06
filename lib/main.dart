@@ -3,16 +3,12 @@ import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:bside_todolist/questions/create/questions_create_screen.dart';
 import 'package:bside_todolist/profile/edit/profile_edit_screen.dart';
 import 'package:bside_todolist/quiz/quiz_create_screen.dart';
-import 'package:bside_todolist/screen/cunning_document_scanner_screen.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
-import 'package:bside_todolist/screen/history_screen.dart';
 import 'package:bside_todolist/login/login_screen.dart';
 import 'package:bside_todolist/home/home_screen.dart';
 import 'package:bside_todolist/profile/profile_screen.dart';
 import 'package:bside_todolist/screen/quiz_screen.dart';
-import 'package:bside_todolist/screen/photo_screen.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
@@ -58,8 +54,8 @@ class MyApp extends StatelessWidget {
       navigatorKey: _navigatorKey,
       initialLocation: '/landing',
       routes: <RouteBase>[
-        GoRoute(path: '/landing', builder: (context, state) => LandingScreen()),
-        GoRoute(path: '/login', builder: (conext, state) => LoginScreen()),
+        GoRoute(path: '/landing', builder: (context, state) => const LandingScreen()),
+        GoRoute(path: '/login', builder: (conext, state) => const LoginScreen()),
         ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return SafeArea(
@@ -94,7 +90,7 @@ class MyApp extends StatelessWidget {
             ),
             GoRoute(
               path: '/folders',
-              builder: (context, state) => QuizScreen(),
+              builder: (context, state) => const QuizScreen(),
               routes: [
                 ShellRoute(
                   parentNavigatorKey: _navigatorKey,
@@ -104,7 +100,7 @@ class MyApp extends StatelessWidget {
                       child: Scaffold(
                         appBar: AppBar(
                           leading: IconButton(
-                            icon: Icon(Icons.chevron_left),
+                            icon: const Icon(Icons.chevron_left),
                             onPressed: () {
                               context.pop();
                             },
@@ -123,7 +119,7 @@ class MyApp extends StatelessWidget {
                         context,
                         state,
                       ) {
-                        return QuizCreateScreen();
+                        return const QuizCreateScreen();
                       },
                     ),
                   ],
@@ -132,7 +128,7 @@ class MyApp extends StatelessWidget {
             ),
             GoRoute(
               path: '/profile',
-              builder: (context, state) => ProfileScreen(),
+              builder: (context, state) => const ProfileScreen(),
               routes: [
                 ShellRoute(
                   parentNavigatorKey: _navigatorKey,
@@ -142,7 +138,7 @@ class MyApp extends StatelessWidget {
                       child: Scaffold(
                         appBar: AppBar(
                           leading: IconButton(
-                            icon: Icon(Icons.chevron_left),
+                            icon: const Icon(Icons.chevron_left),
                             onPressed: () {
                               context.pop();
                             },
@@ -161,7 +157,7 @@ class MyApp extends StatelessWidget {
                         context,
                         state,
                       ) {
-                        return ProfileEditScreen();
+                        return const ProfileEditScreen();
                       },
                     ),
                   ],
@@ -183,9 +179,9 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
         fontFamily: 'Apple SD Gothic Neo',
-        fontFamilyFallback: ['SF Pro Text'],
-        textTheme: TextTheme(
-          headline1: TextStyle(
+        fontFamilyFallback: const ['SF Pro Text'],
+        textTheme: const TextTheme(
+          displayLarge: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 24,
           ),

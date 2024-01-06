@@ -38,19 +38,19 @@ class _DocumentScannerState extends State<DocumentScanner> {
       onTap: onPressed,
       child: CardWrapper(
         borderRadius: 4,
-        child: Container(
+        child: SizedBox(
           height: widget.height,
           width: double.infinity,
           child: _pictures.isEmpty
               ? Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
+                    const Icon(
                       Icons.camera_alt_outlined,
                       color: MyColors.starGreen,
                       size: 24,
                     ),
-                    SizedBox(height: 26),
+                    const SizedBox(height: 26),
                     Text(widget.title),
                   ],
                 )
