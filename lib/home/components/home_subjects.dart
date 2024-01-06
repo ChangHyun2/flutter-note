@@ -2,7 +2,9 @@ import 'package:bside_todolist/api/api.dart';
 import 'package:bside_todolist/api/apiClient.dart';
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
+import 'package:bside_todolist/common/provider/subjects.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/components/ui/system/colors.dart';
 
@@ -52,55 +54,60 @@ class HomeSubjects extends StatelessWidget {
           width: double.infinity,
           height: 112,
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: FutureBuilder(
-              future: getApiClient().getSubjects(),
-              builder: (BuildContext context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Text('');
-                } else if (snapshot.hasError) {
-                  return const Text('');
-                } else {
-                  List<Subject> subjects = snapshot.data!.data.subjects;
+          child: Consumer(
+            builder: (context, ref, child) {
+              final AsyncValue<List<Subject>> subjects =
+                  ref.watch(subjectsProvider);
 
-                  return ListView.separated(
-                    itemCount: subjects.length,
-                    separatorBuilder: (BuildContext context, int index) =>
-                        const SizedBox(width: 16),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (BuildContext context, int index) {
-                      return CardWrapper(
-                        borderRadius: 5,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
+              if (subjects.isLoading) {
+                return Text('');
+              }
+
+              if (subjects.hasError) {
+                return Text('');
+              }
+
+              var subjectsData = subjects.value!;
+
+              return ListView.separated(
+                itemCount: subjectsData.length,
+                separatorBuilder: (BuildContext context, int index) =>
+                    const SizedBox(width: 16),
+                scrollDirection: Axis.horizontal,
+                itemBuilder: (BuildContext context, int index) {
+                  return CardWrapper(
+                    borderRadius: 5,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
+                      width: 150,
+                      height: 112,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            subjectsData[index].subjectName,
+                            style: MyTexts.KR16700,
                           ),
-                          width: 150,
-                          height: 112,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
-                                subjects[index].subjectName,
-                                style: MyTexts.KR16700,
+                                subjectsData[index].subjectSize.toString(),
                               ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    subjects[index].subjectSize.toString(),
-                                  ),
-                                ],
-                              )
                             ],
-                          ),
-                        ),
-                      );
-                    },
+                          )
+                        ],
+                      ),
+                    ),
                   );
-                }
-              }),
+                },
+              );
+            },
+          ),
         )
       ],
     );

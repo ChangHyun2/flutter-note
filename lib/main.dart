@@ -11,10 +11,12 @@ import 'package:bside_todolist/screen/quiz_screen.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -33,12 +35,17 @@ Future main() async {
 // Get a specific camera from the list of available cameras.
   final firstCamera = cameras.first;
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
-    ],
-    child: MyApp(camera: firstCamera),
-  ));
+  runApp(
+    provider.MultiProvider(
+      providers: [
+        provider.ChangeNotifierProvider<AuthProvider>(
+            create: (context) => AuthProvider()),
+      ],
+      child: ProviderScope(
+        child: MyApp(camera: firstCamera),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -54,8 +61,11 @@ class MyApp extends StatelessWidget {
       navigatorKey: _navigatorKey,
       initialLocation: '/landing',
       routes: <RouteBase>[
-        GoRoute(path: '/landing', builder: (context, state) => const LandingScreen()),
-        GoRoute(path: '/login', builder: (conext, state) => const LoginScreen()),
+        GoRoute(
+            path: '/landing',
+            builder: (context, state) => const LandingScreen()),
+        GoRoute(
+            path: '/login', builder: (conext, state) => const LoginScreen()),
         ShellRoute(
           builder: (BuildContext context, GoRouterState state, Widget child) {
             return SafeArea(
