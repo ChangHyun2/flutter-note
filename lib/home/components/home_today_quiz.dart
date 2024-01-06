@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 import '../../common/components/ui/system/colors.dart';
 import '../../common/components/ui/system/texts.dart';
@@ -13,7 +14,12 @@ class HomeTodayQuiz extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const SizedBox(height: 95, width: 113),
+          SvgPicture.asset(
+            height: 95,
+            width: 113,
+            'assets/home_star.svg',
+            semanticsLabel: 'star character',
+          ),
           const SizedBox(width: 36),
           Expanded(
             child: Column(
