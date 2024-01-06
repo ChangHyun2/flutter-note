@@ -6,7 +6,6 @@ import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
-import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
@@ -14,14 +13,14 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:dio/dio.dart';
 import 'package:http_parser/http_parser.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 Map<int, String> questionTypes = {0: '주관식', 1: '객관식'};
 
 Map<int, String> difficultTypes = {
-  0: '하',
-  1: '중',
-  2: '상',
+  0: '어려움',
+  1: '보통',
+  2: '쉬움',
 };
 
 Map<int, String> incorrectReasons = {
@@ -48,10 +47,10 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
     '4': null,
     '5': null,
   };
-  var _titleController = TextEditingController();
-  var _answerController = TextEditingController();
-  var _memoController = TextEditingController();
-  var _keywordController = TextEditingController();
+  final _titleController = TextEditingController();
+  final _answerController = TextEditingController();
+  final _memoController = TextEditingController();
+  final _keywordController = TextEditingController();
   var _questionType = 0;
   var _incorrectReason = 0;
   var _difficultType = 0;
@@ -79,30 +78,51 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
 
     print(correctAnswers);
 
-    // post imagese
-    final List<MultipartFile> answerImages = [
-      for (var picture in _answerPictures)
-        MultipartFile.fromBytes(
-          File(picture).readAsBytesSync(),
-          filename: picture,
-          contentType: MediaType('application', 'octet-stream'),
-        )
-    ];
+    // // post imagese
 
-    final List<MultipartFile> questionImages = [
-      for (var picture in _questionPictures)
+    // TODO: 원본, 압축본 둘 다 로컬에 저장되고 있음 => 중복없게 어떻게 처리할 것인지
+    final List<MultipartFile> answerImages = [];
+
+    for (var picture in _answerPictures) {
+      var result = await FlutterImageCompress.compressAndGetFile(
+          picture, picture + 'c.jpeg',
+          quality: 1);
+
+      answerImages.add(
         MultipartFile.fromBytes(
-          File(picture).readAsBytesSync(),
+          result != null
+              ? await result.readAsBytes()
+              : File(picture).readAsBytesSync(),
           filename: picture,
           contentType: MediaType('application', 'octet-stream'),
-        )
-    ];
+        ),
+      );
+    }
+
+    final List<MultipartFile> questionImages = [];
+
+    for (var picture in _questionPictures) {
+      var result = await FlutterImageCompress.compressAndGetFile(
+          picture, picture + 'c.jpeg',
+          quality: 1);
+
+      questionImages.add(
+        MultipartFile.fromBytes(
+          result != null
+              ? await result.readAsBytes()
+              : File(picture).readAsBytesSync(),
+          filename: picture,
+          contentType: MediaType('application', 'octet-stream'),
+        ),
+      );
+    }
+
+    print(questionImages[0].toString());
+    print(answerImages[0].toString());
 
     var postImagesRseponse = await getApiClient().postImages(
-      answerImages,
       questionImages,
-      null,
-      context.read<AuthProvider>().kakaoUser!.id.toString(),
+      answerImages,
     );
 
     var answerImageUrls = postImagesRseponse.data.answerImageUrls;
@@ -119,7 +139,9 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
         incorrectReason: incorrectReasons[_incorrectReason]!,
         keywords: _keywords,
         questionImageUrls: questionImageUrls,
-        answerImageUrls: answerImageUrls,
+        answerImageUrls: questionImageUrls,
+        // questionImageUrls: ['https://picsum.photos/200/300'],
+        // answerImageUrls: ['https://picsum.photos/200/300'],
       ),
     );
   }
@@ -132,7 +154,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
           return DropdownMenu(
             width: MediaQuery.of(context).size.width - 32,
             initialSelection: '기본 폴더',
-            dropdownMenuEntries: [
+            dropdownMenuEntries: const [
               DropdownMenuEntry(
                 value: '기본 폴더',
                 label: '기본 폴더',
@@ -143,7 +165,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
           return DropdownMenu(
             width: MediaQuery.of(context).size.width - 32,
             initialSelection: '기본 폴더',
-            dropdownMenuEntries: [
+            dropdownMenuEntries: const [
               DropdownMenuEntry(
                 value: '기본 폴더',
                 label: '기본 폴더',
@@ -184,11 +206,11 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
       },
       style: OutlinedButton.styleFrom(
         foregroundColor: Colors.white,
-        shape: CircleBorder(),
+        shape: const CircleBorder(),
         backgroundColor: Colors.white,
-        padding: EdgeInsets.all(0),
-        maximumSize: Size(24, 24),
-        minimumSize: Size(24, 24),
+        padding: const EdgeInsets.all(0),
+        maximumSize: const Size(24, 24),
+        minimumSize: const Size(24, 24),
         side: BorderSide(
           width: 2,
           color: _answers[index] == null
@@ -219,22 +241,22 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
           appBar: AppBar(
             backgroundColor: MyColors.starGreen,
             leading: IconButton(
-              icon: Icon(Icons.chevron_left),
+              icon: const Icon(Icons.chevron_left),
               onPressed: () {
                 context.pop();
               },
             ),
-            title: Text('문제 등록'),
+            title: const Text('문제 등록'),
           ),
           body: Stack(
             children: [
               SingleChildScrollView(
-                child: Container(
+                child: SizedBox(
                   width: double.infinity,
                   child: Column(
                     children: [
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -262,11 +284,11 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                               },
                               child: CardWrapper(
                                 borderRadius: 4,
-                                child: Container(
+                                child: SizedBox(
                                   height: 360,
                                   width: double.infinity,
                                   child: _questionPictures.isEmpty
-                                      ? Column(
+                                      ? const Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
@@ -301,7 +323,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                               ),
                             ]),
                             Container(
-                              margin: EdgeInsets.only(left: 8),
+                              margin: const EdgeInsets.only(left: 8),
                               child: TextFormField(
                                 controller: _titleController,
                                 decoration: InputDecoration(
@@ -340,7 +362,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             Row(
                               children: [
                                 const SizedBox(width: 8),
-                                Text('주관식', style: MyTexts.KR14400),
+                                const Text('주관식', style: MyTexts.KR14400),
                                 Radio(
                                   value: 0,
                                   groupValue: _questionType,
@@ -356,7 +378,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                           ? MyColors.starGreen
                                           : MyColors.gray500),
                                 ),
-                                Text('객관식', style: MyTexts.KR14400),
+                                const Text('객관식', style: MyTexts.KR14400),
                                 Radio(
                                   value: 1,
                                   groupValue: _questionType,
@@ -384,7 +406,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                               ),
                             ]),
                             Container(
-                              margin: EdgeInsets.only(left: 8),
+                              margin: const EdgeInsets.only(left: 8),
                               child: _questionType == 0
                                   ? TextFormField(
                                       controller: _answerController,
@@ -429,8 +451,8 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             const Text('틀린 이유', style: MyTexts.KR14700),
                             Row(
                               children: [
-                                SizedBox(width: 8),
-                                Text('개념 이해 부족', style: MyTexts.KR14400),
+                                const SizedBox(width: 8),
+                                const Text('개념 이해 부족', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _difficultType == 0,
                                   onChanged: (value) {
@@ -456,7 +478,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                     borderRadius: BorderRadius.circular(3.0),
                                   ),
                                 ),
-                                Text('시간 관리 부족', style: MyTexts.KR14400),
+                                const Text('시간 관리 부족', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _difficultType == 1,
                                   onChanged: (value) {
@@ -486,8 +508,8 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             ),
                             Row(
                               children: [
-                                SizedBox(width: 8),
-                                Text('문제 해독 미숙', style: MyTexts.KR14400),
+                                const SizedBox(width: 8),
+                                const Text('문제 해독 미숙', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _difficultType == 2,
                                   onChanged: (value) {
@@ -513,7 +535,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                     borderRadius: BorderRadius.circular(3.0),
                                   ),
                                 ),
-                                Text('단순 실수', style: MyTexts.KR14400),
+                                const Text('단순 실수', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _difficultType == 3,
                                   onChanged: (value) {
@@ -545,8 +567,8 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             const Text('문제 난이도', style: MyTexts.KR14700),
                             Row(
                               children: [
-                                SizedBox(width: 8),
-                                Text('어려움', style: MyTexts.KR14400),
+                                const SizedBox(width: 8),
+                                const Text('어려움', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _incorrectReason == 0,
                                   onChanged: (value) {
@@ -572,7 +594,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                     borderRadius: BorderRadius.circular(3.0),
                                   ),
                                 ),
-                                Text('보통', style: MyTexts.KR14400),
+                                const Text('보통', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _incorrectReason == 1,
                                   onChanged: (value) {
@@ -598,7 +620,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                     borderRadius: BorderRadius.circular(3.0),
                                   ),
                                 ),
-                                Text('쉬움', style: MyTexts.KR14400),
+                                const Text('쉬움', style: MyTexts.KR14400),
                                 Checkbox(
                                   value: _incorrectReason == 2,
                                   onChanged: (value) {
@@ -652,11 +674,11 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                               },
                               child: CardWrapper(
                                 borderRadius: 4,
-                                child: Container(
+                                child: SizedBox(
                                   height: 140,
                                   width: double.infinity,
                                   child: _answerPictures.isEmpty
-                                      ? Column(
+                                      ? const Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
@@ -681,7 +703,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             const SizedBox(height: 24),
                             const Text('메모', style: MyTexts.KR14700),
                             Container(
-                              margin: EdgeInsets.only(left: 8),
+                              margin: const EdgeInsets.only(left: 8),
                               child: TextFormField(
                                 controller: _memoController,
                                 decoration: InputDecoration(
@@ -712,7 +734,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             const Text('키워드', style: MyTexts.KR14700),
                             SizedBox(height: _keywords.isEmpty ? 0 : 16),
                             Container(
-                              margin: EdgeInsets.only(left: 8),
+                              margin: const EdgeInsets.only(left: 8),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -724,8 +746,9 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                             (keyword) => CardWrapper(
                                               borderRadius: 100,
                                               child: Container(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    16, 0, 8, 0),
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        16, 0, 8, 0),
                                                 child: Row(
                                                   children: [
                                                     Text(
@@ -741,13 +764,13 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                                         setState(() {
                                                           _keywords = _keywords
                                                               .where(
-                                                                  (_keyword) =>
-                                                                      _keyword !=
+                                                                  (keyword) =>
+                                                                      keyword !=
                                                                       keyword)
                                                               .toList();
                                                         });
                                                       },
-                                                      child: Container(
+                                                      child: const SizedBox(
                                                         width: 24,
                                                         height: 24,
                                                         child: Center(
@@ -772,10 +795,10 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                     controller: _keywordController,
                                     onEditingComplete: () {
                                       setState(() {
-                                        _keywords = [
+                                        _keywords = {
                                           ..._keywords,
                                           _keywordController.value.text
-                                        ].toSet().toList();
+                                        }.toList();
                                         _keywordController.clear();
                                       });
                                       print('editing complete');
@@ -815,9 +838,9 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                     .copyWith(color: MyColors.red400),
                               ),
                             ]),
-                            SizedBox(height: 16),
+                            const SizedBox(height: 16),
                             buildFolderDropdownMenu(),
-                            SizedBox(height: 40),
+                            const SizedBox(height: 40),
                             const SizedBox(height: 64),
                           ],
                         ),
@@ -835,17 +858,17 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             ),
                             height: 64,
                             width: double.infinity,
-                            padding: EdgeInsets.symmetric(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 35, vertical: 11),
                             child: MyButton(
                               onPressed: () => submit(context),
                               type: MyButtonType.starGreen,
-                              child: Text('문제와 해설 등록하기'),
+                              child: const Text('문제와 해설 등록하기'),
                             ),
                           );
                         }
 
-                        return Text('');
+                        return const Text('');
                       }),
                     ],
                   ),
@@ -867,16 +890,16 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                         ),
                         height: 64,
                         width: double.infinity,
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 35, vertical: 11),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 35, vertical: 11),
                         child: MyButton(
                           onPressed: () => submit(context),
                           type: MyButtonType.starGreen,
-                          child: Text('문제와 해설 등록하기'),
+                          child: const Text('문제와 해설 등록하기'),
                         ),
                       ),
                     )
-                  : Text(''),
+                  : const Text(''),
             ],
           ),
           bottomNavigationBar: null,

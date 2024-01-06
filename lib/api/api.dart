@@ -1,6 +1,3 @@
-import 'dart:convert' show jsonEncode;
-import 'dart:io';
-
 import 'package:dio/dio.dart' hide Headers;
 import 'package:json_annotation/json_annotation.dart';
 import 'package:retrofit/retrofit.dart';
@@ -16,13 +13,11 @@ abstract class RestClient {
     @Body() PostAuthKakaoRequest request,
   );
 
-  @POST('/images')
   @MultiPart()
+  @POST('/images/questions')
   Future<HttpResponse<PostImagesResponse>> postImages(
-    @Part() List<MultipartFile>? questionImages,
-    @Part() List<MultipartFile>? answerImages,
-    @Part() List<MultipartFile>? profileImage,
-    @Part() String kakaoId,
+    @Part() List<MultipartFile> questionImages,
+    @Part() List<MultipartFile> answerImages,
   );
 
   @POST('/questions')

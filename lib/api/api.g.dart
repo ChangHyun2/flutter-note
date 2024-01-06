@@ -213,30 +213,16 @@ class _RestClient implements RestClient {
 
   @override
   Future<HttpResponse<PostImagesResponse>> postImages(
-    List<MultipartFile>? questionImages,
-    List<MultipartFile>? answerImages,
-    List<MultipartFile>? profileImage,
-    String kakaoId,
+    List<MultipartFile> questionImages,
+    List<MultipartFile> answerImages,
   ) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.removeWhere((k, v) => v == null);
     final _headers = <String, dynamic>{};
     final _data = FormData();
-    if (questionImages != null) {
-      _data.files
-          .addAll(questionImages.map((i) => MapEntry('questionImages', i)));
-    }
-    if (answerImages != null) {
-      _data.files.addAll(answerImages.map((i) => MapEntry('answerImages', i)));
-    }
-    if (profileImage != null) {
-      _data.files.addAll(profileImage.map((i) => MapEntry('profileImage', i)));
-    }
-    _data.fields.add(MapEntry(
-      'kakaoId',
-      kakaoId,
-    ));
+    _data.files
+        .addAll(questionImages.map((i) => MapEntry('questionImages', i)));
+    _data.files.addAll(answerImages.map((i) => MapEntry('answerImages', i)));
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<PostImagesResponse>>(Options(
       method: 'POST',
@@ -246,7 +232,7 @@ class _RestClient implements RestClient {
     )
             .compose(
               _dio.options,
-              '/images',
+              '/images/questions',
               queryParameters: queryParameters,
               data: _data,
             )
