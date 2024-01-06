@@ -18,13 +18,13 @@ class HomeProfile extends StatelessWidget {
 
     return Container(
       height: 200,
-      decoration: BoxDecoration(color: MyColors.starGreen),
+      decoration: const BoxDecoration(color: MyColors.starGreen),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             height: 90,
-            padding: EdgeInsets.fromLTRB(16, 16, 16, 13),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 13),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

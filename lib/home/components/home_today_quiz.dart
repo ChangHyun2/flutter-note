@@ -31,7 +31,7 @@ class HomeTodayQuiz extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8), //
                       // <-- Radius
                     ),
-                    minimumSize: Size(170, 37),
+                    minimumSize: const Size(170, 37),
                   ),
                   onPressed: () => {},
                   child: Text(
