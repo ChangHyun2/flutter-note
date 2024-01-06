@@ -71,6 +71,7 @@ class _DocumentScannerState extends State<DocumentScanner> {
       pictures = await CunningDocumentScanner.getPictures(true) ?? [];
 
       if (!mounted) return;
+
       setState(() {
         _pictures = pictures;
       });
