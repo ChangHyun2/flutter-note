@@ -1,4 +1,6 @@
 import 'package:bside_todolist/common/components/bottom_nav_bar.dart';
+import 'package:bside_todolist/common/components/ui/button.dart';
+import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:bside_todolist/questions/create/questions_create_screen.dart';
 import 'package:bside_todolist/profile/edit/profile_edit_screen.dart';
@@ -144,21 +146,7 @@ class MyApp extends StatelessWidget {
                   parentNavigatorKey: _navigatorKey,
                   builder: (BuildContext context, GoRouterState state,
                       Widget child) {
-                    return SafeArea(
-                      child: Scaffold(
-                        appBar: AppBar(
-                          leading: IconButton(
-                            icon: const Icon(Icons.chevron_left),
-                            onPressed: () {
-                              context.pop();
-                            },
-                          ),
-                        ),
-                        resizeToAvoidBottomInset: false,
-                        body: child,
-                        bottomNavigationBar: null,
-                      ),
-                    );
+                    return child;
                   },
                   routes: [
                     GoRoute(

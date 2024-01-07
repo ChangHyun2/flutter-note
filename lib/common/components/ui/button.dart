@@ -7,6 +7,7 @@ class MyButtonType {
 
   static const String starGreen = 'starGreen';
   static const String starGreenInverse = 'starGreenInverse';
+  static const String transparent = 'transparent';
 }
 
 Map<String, ButtonStyle> myButtonStyle = {
@@ -35,7 +36,39 @@ Map<String, ButtonStyle> myButtonStyle = {
         ),
       );
     }),
-  )
+  ),
+  'transparent': ButtonStyle(
+    foregroundColor: MaterialStateProperty.resolveWith(
+      (Set<MaterialState> states) => states.contains(MaterialState.disabled)
+          ? Colors.white
+          : MyColors.starGreen,
+    ),
+    backgroundColor: MaterialStateProperty.resolveWith(
+        (Set<MaterialState> states) => states.contains(MaterialState.disabled)
+            ? null
+            : Colors.transparent),
+    textStyle: MaterialStateProperty.resolveWith(
+      (Set<MaterialState> states) => states.contains(MaterialState.disabled)
+          ? MyTexts.KRBold14.copyWith(color: Colors.white)
+          : MyTexts.KRBold14.copyWith(color: MyColors.starGreen),
+    ),
+    shadowColor: MaterialStateProperty.all(Colors.transparent),
+    padding: MaterialStateProperty.all(
+      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+    ),
+    shape: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+
+      return RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        side: BorderSide(
+          color: MyColors.starGreen,
+        ),
+      );
+    }),
+  ),
 };
 
 class MyButton extends StatelessWidget {
