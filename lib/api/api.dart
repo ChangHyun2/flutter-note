@@ -27,6 +27,39 @@ abstract class RestClient {
 
   @GET('/subjects')
   Future<HttpResponse<GetSubjectsResponse>> getSubjects();
+
+  @GET('/user')
+  Future<HttpResponse<StarUser>> getUser();
+}
+
+@JsonSerializable()
+class StarUser {
+  const StarUser({
+    required this.id,
+    required this.kakaoId,
+    required this.email,
+    required this.profileUrl,
+    required this.nickName,
+    required this.comment,
+    required this.attendence,
+    required this.lastConnectionDate,
+    required this.totalReviewTime,
+  });
+
+  factory StarUser.fromJson(Map<String, dynamic> json) =>
+      _$StarUserFromJson(json);
+
+  final String id;
+  final int kakaoId;
+  final String email;
+  final String profileUrl;
+  final String nickName;
+  final String comment;
+  final int attendence;
+  final String lastConnectionDate;
+  final String totalReviewTime;
+
+  Map<String, dynamic> toJson() => _$StarUserToJson(this);
 }
 
 @JsonSerializable()

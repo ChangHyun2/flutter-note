@@ -22,7 +22,8 @@ class ProfileMenu extends StatelessWidget {
           height: 1,
         ),
         ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           title: const Text('의견 남기기', style: MyTexts.KR16700),
           trailing: const Icon(
             Icons.chevron_right,
@@ -35,20 +36,21 @@ class ProfileMenu extends StatelessWidget {
           color: MyColors.cardStroke,
           height: 1,
         ),
+        // ListTile(
+        //   contentPadding:
+        //       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+        //   title: const Text('현재 앱 버전', style: MyTexts.KR16700),
+        //   trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
+        //   onTap: () {},
+        // ),
+        // const Divider(
+        //   thickness: 1,
+        //   color: MyColors.cardStroke,
+        //   height: 1,
+        // ),
         ListTile(
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-          title: const Text('현재 앱 버전', style: MyTexts.KR16700),
-          trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
-          onTap: () {},
-        ),
-        const Divider(
-          thickness: 1,
-          color: MyColors.cardStroke,
-          height: 1,
-        ),
-        ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           title: const Text('서비스 약관', style: MyTexts.KR16700),
           trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
           onTap: () {},
@@ -62,7 +64,6 @@ class ProfileMenu extends StatelessWidget {
           contentPadding:
               const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
           title: const Text('로그아웃', style: MyTexts.KR16700),
-          trailing: const Icon(Icons.chevron_right, color: MyColors.gray900),
           onTap: () {
             authProvider.kakaoLogout().then((_) {
               context.go('/login');

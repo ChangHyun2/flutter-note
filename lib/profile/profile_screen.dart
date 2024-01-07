@@ -1,9 +1,11 @@
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
+import 'package:bside_todolist/common/provider/user.dart';
 import 'package:bside_todolist/profile/components/profile_feedback.dart';
 import 'package:bside_todolist/profile/components/profile_menu.dart';
 import 'package:bside_todolist/profile/components/profile_user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -11,10 +13,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = context.watch<AuthProvider>();
-
-    String? nickname = authProvider.kakaoUser?.kakaoAccount?.profile?.nickname;
-
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,
@@ -30,7 +28,7 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 12),
-            const ProfileUser(),
+            ProfileUser(),
             const SizedBox(height: 24),
             const ProfileFeedback(),
             const SizedBox(

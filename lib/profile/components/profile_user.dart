@@ -1,19 +1,19 @@
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
-import 'package:bside_todolist/common/provider/auth_provider.dart';
+import 'package:bside_todolist/common/provider/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class ProfileUser extends StatelessWidget {
+class ProfileUser extends ConsumerWidget {
   const ProfileUser({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var authProvider = context.watch<AuthProvider>();
-
-    String? nickname = authProvider.kakaoUser?.kakaoAccount?.profile?.nickname;
+  Widget build(BuildContext context, ref) {
+    var starUser = ref.watch(userProvider);
+    String? profileUrl = starUser.value?.profileUrl;
+    String nickname = starUser.value?.nickName ?? '';
 
     var reviewTimes = '1시간 8분';
     var checkinDays = '3일';
@@ -31,9 +31,13 @@ class ProfileUser extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const CircleAvatar(
-                          radius: 24,
-                        ),
+                        profileUrl == null
+                            ? Text('')
+                            : CircleAvatar(
+                                radius: 24,
+                                backgroundImage: NetworkImage(profileUrl),
+                                backgroundColor: Colors.transparent,
+                              ),
                         const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +93,7 @@ class ProfileUser extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Column(
                         children: [
-                          const Text('⏱️ 누적 출석'),
+                          const Text('🗓️ 누적 출석'),
                           Text(checkinDays),
                         ],
                       ),

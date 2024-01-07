@@ -6,6 +6,30 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+StarUser _$StarUserFromJson(Map<String, dynamic> json) => StarUser(
+      id: json['id'] as String,
+      kakaoId: json['kakaoId'] as int,
+      email: json['email'] as String,
+      profileUrl: json['profileUrl'] as String,
+      nickName: json['nickName'] as String,
+      comment: json['comment'] as String,
+      attendence: json['attendence'] as int,
+      lastConnectionDate: json['lastConnectionDate'] as String,
+      totalReviewTime: json['totalReviewTime'] as String,
+    );
+
+Map<String, dynamic> _$StarUserToJson(StarUser instance) => <String, dynamic>{
+      'id': instance.id,
+      'kakaoId': instance.kakaoId,
+      'email': instance.email,
+      'profileUrl': instance.profileUrl,
+      'nickName': instance.nickName,
+      'comment': instance.comment,
+      'attendence': instance.attendence,
+      'lastConnectionDate': instance.lastConnectionDate,
+      'totalReviewTime': instance.totalReviewTime,
+    };
+
 GetSubjectsResponse _$GetSubjectsResponseFromJson(Map<String, dynamic> json) =>
     GetSubjectsResponse(
       subjects: (json['subjects'] as List<dynamic>)
@@ -300,6 +324,34 @@ class _RestClient implements RestClient {
               baseUrl,
             ))));
     final value = GetSubjectsResponse.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<StarUser>> getUser() async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<StarUser>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = StarUser.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
