@@ -6,6 +6,20 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+PostUserRequest _$PostUserRequestFromJson(Map<String, dynamic> json) =>
+    PostUserRequest(
+      profileImageUrl: json['profileImageUrl'] as String,
+      nickName: json['nickName'] as String,
+      comment: json['comment'] as String,
+    );
+
+Map<String, dynamic> _$PostUserRequestToJson(PostUserRequest instance) =>
+    <String, dynamic>{
+      'profileImageUrl': instance.profileImageUrl,
+      'nickName': instance.nickName,
+      'comment': instance.comment,
+    };
+
 StarUser _$StarUserFromJson(Map<String, dynamic> json) => StarUser(
       id: json['id'] as String,
       kakaoId: json['kakaoId'] as int,
@@ -337,6 +351,35 @@ class _RestClient implements RestClient {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<StarUser>>(Options(
       method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/user',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = StarUser.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<StarUser>> postUser(PostUserRequest request) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<StarUser>>(Options(
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )

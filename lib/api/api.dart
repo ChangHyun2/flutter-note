@@ -30,6 +30,27 @@ abstract class RestClient {
 
   @GET('/user')
   Future<HttpResponse<StarUser>> getUser();
+
+  @POST('/user')
+  Future<HttpResponse<StarUser>> postUser(@Body() PostUserRequest request);
+}
+
+@JsonSerializable()
+class PostUserRequest {
+  const PostUserRequest({
+    required this.profileImageUrl,
+    required this.nickName,
+    required this.comment,
+  });
+
+  factory PostUserRequest.fromJson(Map<String, dynamic> json) =>
+      _$PostUserRequestFromJson(json);
+
+  final String profileImageUrl;
+  final String nickName;
+  final String comment;
+
+  Map<String, dynamic> toJson() => _$PostUserRequestToJson(this);
 }
 
 @JsonSerializable()

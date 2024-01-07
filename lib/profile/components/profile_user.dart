@@ -11,9 +11,9 @@ class ProfileUser extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    var starUser = ref.watch(userProvider);
-    String? profileUrl = starUser.value?.profileUrl;
-    String nickname = starUser.value?.nickName ?? '';
+    var starUser = ref.read(userRiverProvider.notifier);
+    String? profileUrl = starUser.state.value?.profileUrl;
+    String nickname = starUser.state.value?.nickName ?? '';
 
     var reviewTimes = '1시간 8분';
     var checkinDays = '3일';
