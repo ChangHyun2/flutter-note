@@ -18,6 +18,7 @@ class HomeScreen extends StatelessWidget {
     var profileUrl = kakaoAccount?.profile?.thumbnailImageUrl;
 
     return SingleChildScrollView(
+      physics: const ClampingScrollPhysics(),
       child: Stack(
         children: [
           const HomeProfile(),

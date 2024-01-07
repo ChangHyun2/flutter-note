@@ -10,22 +10,37 @@ class MyButtonType {
 }
 
 Map<String, ButtonStyle> myButtonStyle = {
-  'starGreen': ElevatedButton.styleFrom(
-    foregroundColor: Colors.white,
-    backgroundColor: MyColors.starGreen,
-    textStyle: MyTexts.KRBold14.copyWith(color: Colors.white),
-    padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8.0),
-      side: const BorderSide(color: MyColors.starGreen),
+  'starGreen': ButtonStyle(
+    foregroundColor: MaterialStateProperty.resolveWith(
+        (Set<MaterialState> states) => states.isEmpty ? Colors.white : null),
+    backgroundColor: MaterialStateProperty.resolveWith(
+        (Set<MaterialState> states) =>
+            states.isEmpty ? MyColors.starGreen : null),
+    textStyle: MaterialStateProperty.all(
+      MyTexts.KRBold14.copyWith(color: Colors.white),
     ),
-    shadowColor: Colors.transparent,
-  ),
+    padding: MaterialStateProperty.all(
+      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+    ),
+    shadowColor: MaterialStateProperty.all(Colors.transparent),
+    shape: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+
+      return RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        side: BorderSide(
+          color: MyColors.starGreen,
+        ),
+      );
+    }),
+  )
 };
 
 class MyButton extends StatelessWidget {
   final Widget child;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final String type;
 
   const MyButton({

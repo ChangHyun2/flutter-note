@@ -1,12 +1,18 @@
 import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
+import 'package:bside_todolist/common/provider/subjects.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeCreateQuiz extends StatelessWidget {
+class HomeCreateQuiz extends ConsumerWidget {
   const HomeCreateQuiz({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    var subjectsRiver = ref.watch(subjectsProvider);
+    var hasQuiz =
+        subjectsRiver.hasValue && subjectsRiver.value![0].subjectSize != 0;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -22,9 +28,11 @@ class HomeCreateQuiz extends StatelessWidget {
               SizedBox(
                 width: 260,
                 child: MyButton(
-                  onPressed: () {
-                    print('hello');
-                  },
+                  onPressed: hasQuiz
+                      ? () {
+                          print('hello');
+                        }
+                      : null,
                   type: MyButtonType.starGreen,
                   child: const Text('나만의 퀴즈 만들기'),
                 ),
