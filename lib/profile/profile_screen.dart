@@ -36,7 +36,11 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
             const ProfileUser(),
             const SizedBox(height: 24),
-            const ProfileFeedback(),
+            InkWell(
+                onTap: () {
+                  context.go('/board/opinion');
+                },
+                child: const ProfileFeedback()),
             const SizedBox(
               height: 24,
             ),

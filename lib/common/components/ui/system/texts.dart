@@ -97,4 +97,44 @@ class MyTexts {
     fontSize: 14,
     height: 1.5,
   );
+
+  static const TextStyle KR16800 = TextStyle(
+    color: MyColors.gray900,
+    fontWeight: FontWeight.w800,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 16,
+    height: 1.5,
+  );
+
+  static const TextStyle KRGray14400 = TextStyle(
+    color: MyColors.gray500,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 16,
+    height: 1.5,
+  );
+
+  static const TextStyle KRBlack16400 = TextStyle(
+    color: Colors.black,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 16,
+    height: 1.5,
+  );
+
+  static const TextStyle KRGreen16400 = TextStyle(
+    color: MyColors.starGreen,
+    fontWeight: FontWeight.w400,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 16,
+    height: 1.5,
+  );
+
+  static const TextStyle KR14800 = TextStyle(
+    color: MyColors.gray900,
+    fontWeight: FontWeight.w800,
+    fontFamily: 'Apple SD Gothic Neo',
+    fontSize: 14,
+    height: 1.5,
+  );
 }

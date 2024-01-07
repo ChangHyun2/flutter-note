@@ -1,6 +1,7 @@
 import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeCreateQuiz extends StatelessWidget {
   const HomeCreateQuiz({super.key});
@@ -23,7 +24,7 @@ class HomeCreateQuiz extends StatelessWidget {
                 width: 260,
                 child: MyButton(
                   onPressed: () {
-                    print('hello');
+                    context.go('/folders/create');
                   },
                   type: MyButtonType.starGreen,
                   child: const Text('나만의 퀴즈 만들기'),
