@@ -9,19 +9,25 @@ class UserRiver extends _$UserRiver {
   @override
   Future<StarUser?> build() async {
     try {
-      final response = await getApiClient().getUser();
+      final response = await getApiClient().getUsers();
+      print('get users done');
+      print(response.data);
       return response.data;
     } catch (e) {
+      print('get users error');
       print(e);
       return null;
     }
   }
 
-  Future<void> postUser(PostUserRequest postUserRequest) async {
+  Future<void> patchUsers(PatchUsersRequest patchUserRequest) async {
     try {
-      final response = await getApiClient().postUser(postUserRequest);
-      state = AsyncData(response.data);
+      final response = await getApiClient().patchUsers(patchUserRequest);
+
+      print(response.data);
+      ref.invalidateSelf();
     } catch (e) {
+      print('patch users error');
       print(e);
       throw e;
     }

@@ -15,9 +15,15 @@ abstract class RestClient {
 
   @MultiPart()
   @POST('/images/questions')
-  Future<HttpResponse<PostImagesResponse>> postImages(
+  Future<HttpResponse<PostImagesQuestionsResponse>> postImagesQuestions(
     @Part() List<MultipartFile> questionImages,
     @Part() List<MultipartFile> answerImages,
+  );
+
+  @MultiPart()
+  @POST('/images/profile')
+  Future<HttpResponse<PostImagesProfileResponse>> postImagesProfile(
+    @Part() List<MultipartFile> profileImage,
   );
 
   @POST('/questions')
@@ -28,29 +34,29 @@ abstract class RestClient {
   @GET('/subjects')
   Future<HttpResponse<GetSubjectsResponse>> getSubjects();
 
-  @GET('/user')
-  Future<HttpResponse<StarUser>> getUser();
+  @GET('/users')
+  Future<HttpResponse<StarUser>> getUsers();
 
-  @POST('/user')
-  Future<HttpResponse<StarUser>> postUser(@Body() PostUserRequest request);
+  @PATCH('/users')
+  Future<HttpResponse<StarUser>> patchUsers(@Body() PatchUsersRequest request);
 }
 
 @JsonSerializable()
-class PostUserRequest {
-  const PostUserRequest({
-    required this.profileImageUrl,
-    required this.nickName,
-    required this.comment,
+class PatchUsersRequest {
+  const PatchUsersRequest({
+    this.profileImageUrl,
+    this.nickName,
+    this.comment,
   });
 
-  factory PostUserRequest.fromJson(Map<String, dynamic> json) =>
-      _$PostUserRequestFromJson(json);
+  factory PatchUsersRequest.fromJson(Map<String, dynamic> json) =>
+      _$PatchUsersRequestFromJson(json);
 
-  final String profileImageUrl;
-  final String nickName;
-  final String comment;
+  final String? profileImageUrl;
+  final String? nickName;
+  final String? comment;
 
-  Map<String, dynamic> toJson() => _$PostUserRequestToJson(this);
+  Map<String, dynamic> toJson() => _$PatchUsersRequestToJson(this);
 }
 
 @JsonSerializable()
@@ -59,12 +65,12 @@ class StarUser {
     required this.id,
     required this.kakaoId,
     required this.email,
-    required this.profileUrl,
+    this.profileUrl,
     required this.nickName,
-    required this.comment,
-    required this.attendence,
+    this.comment,
+    required this.attendance,
     required this.lastConnectionDate,
-    required this.totalReviewTime,
+    this.totalReviewTime,
   });
 
   factory StarUser.fromJson(Map<String, dynamic> json) =>
@@ -73,12 +79,12 @@ class StarUser {
   final String id;
   final int kakaoId;
   final String email;
-  final String profileUrl;
+  final String? profileUrl;
   final String nickName;
-  final String comment;
-  final int attendence;
+  final String? comment;
+  final int attendance;
   final String lastConnectionDate;
-  final String totalReviewTime;
+  final int? totalReviewTime;
 
   Map<String, dynamic> toJson() => _$StarUserToJson(this);
 }
@@ -146,7 +152,7 @@ class PostQuestionsRequest {
     required this.title,
     required this.questionType,
     required this.difficultyType,
-    required this.memo,
+    this.memo,
     required this.correctAnswers,
     required this.incorrectReason,
     required this.keywords,
@@ -161,7 +167,7 @@ class PostQuestionsRequest {
   final String title;
   final String questionType;
   final String difficultyType;
-  final String memo;
+  final String? memo;
   final List<String> correctAnswers;
   final String incorrectReason;
   final List<String> keywords;
@@ -172,21 +178,35 @@ class PostQuestionsRequest {
 }
 
 @JsonSerializable()
-class PostImagesResponse {
-  const PostImagesResponse({
+class PostImagesQuestionsResponse {
+  const PostImagesQuestionsResponse({
     required this.questionImageUrls,
     required this.answerImageUrls,
     required this.profileUrl,
   });
 
-  factory PostImagesResponse.fromJson(Map<String, dynamic> json) =>
-      _$PostImagesResponseFromJson(json);
+  factory PostImagesQuestionsResponse.fromJson(Map<String, dynamic> json) =>
+      _$PostImagesQuestionsResponseFromJson(json);
 
   final List<String> questionImageUrls;
   final List<String> answerImageUrls;
   final String profileUrl;
 
-  Map<String, dynamic> toJson() => _$PostImagesResponseToJson(this);
+  Map<String, dynamic> toJson() => _$PostImagesQuestionsResponseToJson(this);
+}
+
+@JsonSerializable()
+class PostImagesProfileResponse {
+  const PostImagesProfileResponse({
+    required this.profileImageUrl,
+  });
+
+  factory PostImagesProfileResponse.fromJson(Map<String, dynamic> json) =>
+      _$PostImagesProfileResponseFromJson(json);
+
+  final String profileImageUrl;
+
+  Map<String, dynamic> toJson() => _$PostImagesProfileResponseToJson(this);
 }
 
 @JsonSerializable()
