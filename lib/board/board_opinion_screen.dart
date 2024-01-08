@@ -1,4 +1,6 @@
 import 'package:bside_todolist/board/components/inputbox.dart';
+import 'package:bside_todolist/common/components/ui/system/colors.dart';
+import 'package:bside_todolist/common/components/ui/system/texts.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -45,8 +47,12 @@ class BoardOpinionScreen extends StatelessWidget {
         ),
         DropdownMenu(
           width: MediaQuery.of(context).size.width - 32,
-          initialSelection: 1,
+          initialSelection: 0,
           dropdownMenuEntries: const [
+            DropdownMenuEntry(
+              value: 0,
+              label: '문의 유형을 선택해주세요',
+            ),
             DropdownMenuEntry(
               value: 1,
               label: '폴더1',
@@ -82,20 +88,43 @@ class BoardOpinionScreen extends StatelessWidget {
         ),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: TextFormField(
-            decoration: InputDecoration(
-              hintText: '오류에 대한 문의는 자세하게 작성해주세요.\n문제를 빠르게 파악하고 처리해드릴 수 있어요.',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(5),
-                borderSide: const BorderSide(
-                  color: Colors.grey, // 여기에 테두리 색상을 명시적으로 지정
+          child: Stack(
+            children: [
+              TextFormField(
+                decoration: InputDecoration(
+                  hintText:
+                      '오류에 대한 문의는 자세하게 작성해주세요.\n문제를 빠르게 파악하고 처리해드릴 수 있어요.',
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    borderSide: const BorderSide(
+                        color: Color(0xFFEFEFEF),
+                        width: 1 // 여기에 테두리 색상을 명시적으로 지정
+                        ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(5),
+                    borderSide: const BorderSide(
+                      color: MyColors.starGreen, // 포커스된 상태의 테두리 색상
+                    ),
+                  ),
+                  filled: true,
+                  fillColor: const Color(0xfffcfcfc),
+                ),
+                maxLines: 6,
+                maxLength: 300,
+              ),
+              Positioned(
+                bottom: 29,
+                right: 13,
+                child: Container(
+                  padding: const EdgeInsets.all(8),
+                  child: const Text(
+                    '완료',
+                    style: MyTexts.KR14700,
+                  ),
                 ),
               ),
-              filled: true,
-              fillColor: const Color(0xfffcfcfc),
-            ),
-            maxLines: 6,
-            maxLength: 300,
+            ],
           ),
         ),
       ]))

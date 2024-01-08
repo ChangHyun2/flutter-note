@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
 import 'package:flutter/material.dart';
@@ -32,9 +33,20 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             width: double.infinity,
-            child: const Text(
-              '폴더를 선택해주세요(복수선택 가능)*',
-              style: MyTexts.KR16800,
+            child: RichText(
+              text: const TextSpan(
+                text: '폴더를 선택해주세요(복수선택 가능)',
+                style: MyTexts.KR16800,
+                children: [
+                  TextSpan(
+                    text: '*',
+                    style: TextStyle(
+                      color: Colors.red, // 빨간색으로 변경
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(
@@ -99,6 +111,9 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
                           borderRadius: BorderRadius.circular(3.0),
                         ),
                       ),
+                      const SizedBox(
+                        width: 34,
+                      ),
                       const Text('객관식', style: MyTexts.KR14400),
                       Checkbox(
                         value: _questionTypes[1],
@@ -158,6 +173,9 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
                             borderRadius: BorderRadius.circular(3.0),
                           ),
                         ),
+                        const SizedBox(
+                          width: 34,
+                        ),
                         const Text('보통', style: MyTexts.KR14400),
                         Checkbox(
                           value: _difficultyLevels[1],
@@ -180,6 +198,9 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(3.0),
                           ),
+                        ),
+                        const SizedBox(
+                          width: 34,
                         ),
                         const Text('쉬움', style: MyTexts.KR14400),
                         Checkbox(
@@ -239,6 +260,9 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
                             borderRadius: BorderRadius.circular(3.0),
                           ),
                         ),
+                        const SizedBox(
+                          width: 34,
+                        ),
                         const Text('시간 관리 부족', style: MyTexts.KR14400),
                         Checkbox(
                           value: _incorrectReasons[1],
@@ -290,6 +314,9 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
                             borderRadius: BorderRadius.circular(3.0),
                           ),
                         ),
+                        const SizedBox(
+                          width: 34,
+                        ),
                         const Text('단순 실수', style: MyTexts.KR14400),
                         Checkbox(
                           value: _incorrectReasons[3],
@@ -316,6 +343,16 @@ class _QuizCreateScreenState extends State<QuizCreateScreen> {
                       ],
                     ),
                   ])),
+          const SizedBox(height: 163),
+          SizedBox(
+            width: 306, // 또는 다른 원하는 너비 값으로 조정
+            height: 42,
+            child: MyButton(
+              onPressed: () {},
+              type: MyButtonType.starGreen,
+              child: const Text('나만의 퀴즈 풀기'),
+            ),
+          ),
         ],
       ),
     );

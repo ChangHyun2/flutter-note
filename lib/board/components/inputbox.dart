@@ -1,3 +1,4 @@
+import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:flutter/material.dart';
 
 class BoardCommentTextfield extends StatelessWidget {
@@ -43,10 +44,16 @@ class BoardCommentTextfield extends StatelessWidget {
           child: TextFormField(
             decoration: InputDecoration(
               hintText: labelText,
-              border: OutlineInputBorder(
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(5),
                 borderSide: const BorderSide(
-                  color: Colors.grey, // 여기에 테두리 색상을 명시적으로 지정
+                    color: Color(0xFFEFEFEF), width: 1 // 여기에 테두리 색상을 명시적으로 지정
+                    ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(5),
+                borderSide: const BorderSide(
+                  color: MyColors.starGreen, // 포커스된 상태의 테두리 색상
                 ),
               ),
               filled: true,
