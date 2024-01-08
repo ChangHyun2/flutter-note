@@ -56,7 +56,7 @@ class HomeSubjects extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Consumer(
             builder: (context, ref, child) {
-              final AsyncValue<List<Subject>> subjects =
+              final AsyncValue<List<Subject>?> subjects =
                   ref.watch(subjectsProvider);
 
               if (subjects.isLoading) {
