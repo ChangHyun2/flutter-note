@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'dart:io';
 
 class PhotoScreen extends StatefulWidget {
   const PhotoScreen({
@@ -24,8 +22,8 @@ class _PhotoScreenState extends State<PhotoScreen> {
   late CameraController _controller;
   late Future<void> _initializeControllerFuture;
   var isLoadingCamera = true;
-  var _image = null;
-  var _selectedMode = [true, false];
+  var _image;
+  final _selectedMode = [true, false];
 
   Future<String> getFilePath(String fileName) async {
     Directory appDocumentsDirectory =

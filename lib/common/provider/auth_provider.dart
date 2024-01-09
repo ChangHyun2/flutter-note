@@ -3,7 +3,6 @@
 // found in the LICENSE file.
 import 'package:bside_todolist/api/apiClient.dart';
 import 'package:bside_todolist/common/constants/star_shared_preferences_keys.dart';
-import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -60,7 +59,7 @@ class AuthProvider extends ChangeNotifier {
       if (user.kakaoAccount != null) {
         final kakaoAccount = user.kakaoAccount!;
         print('star login start');
-        PostAuthKakaoRequest postAuthKakaoRequest = await PostAuthKakaoRequest(
+        PostAuthKakaoRequest postAuthKakaoRequest = PostAuthKakaoRequest(
             id: user.id,
             email: kakaoAccount.email!,
             nickname: kakaoAccount.profile!.nickname!,

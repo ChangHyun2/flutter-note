@@ -1,19 +1,19 @@
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
-import 'package:bside_todolist/common/provider/auth_provider.dart';
+import 'package:bside_todolist/common/provider/user.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 
-class ProfileUser extends StatelessWidget {
+class ProfileUser extends ConsumerWidget {
   const ProfileUser({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var authProvider = context.watch<AuthProvider>();
-
-    String? nickname = authProvider.kakaoUser?.kakaoAccount?.profile?.nickname;
+  Widget build(BuildContext context, ref) {
+    var starUser = ref.read(userRiverProvider.notifier);
+    String? profileUrl = starUser.state.value?.profileUrl;
+    String nickname = starUser.state.value?.nickName ?? '';
 
     var reviewTimes = '1시간 8분';
     var checkinDays = '3일';
@@ -31,10 +31,14 @@ class ProfileUser extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const CircleAvatar(
-                          radius: 24,
-                        ),
-                        SizedBox(width: 16),
+                        profileUrl == null
+                            ? Text('')
+                            : CircleAvatar(
+                                radius: 24,
+                                backgroundImage: NetworkImage(profileUrl),
+                                backgroundColor: Colors.transparent,
+                              ),
+                        const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -53,7 +57,7 @@ class ProfileUser extends StatelessWidget {
                       ],
                     ),
                     IconButton(
-                      icon: Icon(Icons.chevron_right),
+                      icon: const Icon(Icons.chevron_right),
                       onPressed: () {
                         print('helol');
                         context.go('/profile/edit');
@@ -69,10 +73,10 @@ class ProfileUser extends StatelessWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Column(
                         children: [
-                          Text('⏱️ 총 복습 시간'),
+                          const Text('⏱️ 총 복습 시간'),
                           Text(reviewTimes),
                         ],
                       ),
@@ -86,10 +90,10 @@ class ProfileUser extends StatelessWidget {
                   Expanded(
                     child: Container(
                       alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(vertical: 16),
+                      padding: const EdgeInsets.symmetric(vertical: 16),
                       child: Column(
                         children: [
-                          const Text('⏱️ 누적 출석'),
+                          const Text('🗓️ 누적 출석'),
                           Text(checkinDays),
                         ],
                       ),

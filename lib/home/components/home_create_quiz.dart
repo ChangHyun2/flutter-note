@@ -1,13 +1,19 @@
 import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
+import 'package:bside_todolist/common/provider/subjects.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeCreateQuiz extends StatelessWidget {
+class HomeCreateQuiz extends ConsumerWidget {
   const HomeCreateQuiz({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, ref) {
+    var subjectsRiver = ref.watch(subjectsProvider);
+    var hasQuiz =
+        subjectsRiver.hasValue && subjectsRiver.value![0].subjectSize != 0;
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 16),

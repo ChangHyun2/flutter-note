@@ -2,6 +2,8 @@ import 'package:bside_todolist/board/board_detail_screen.dart';
 import 'package:bside_todolist/board/board_opinion_screen.dart';
 import 'package:bside_todolist/common/components/bottom_nav_bar.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
+import 'package:bside_todolist/common/components/ui/button.dart';
+import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:bside_todolist/questions/create/questions_create_screen.dart';
 import 'package:bside_todolist/profile/edit/profile_edit_screen.dart';
@@ -9,20 +11,19 @@ import 'package:bside_todolist/quiz/quiz_create_screen.dart';
 import 'package:bside_todolist/screen/board_screen.dart';
 import 'package:bside_todolist/screen/cunning_document_scanner_screen.dart';
 import 'package:bside_todolist/screen/landing_screen.dart';
-import 'package:bside_todolist/screen/history_screen.dart';
 import 'package:bside_todolist/login/login_screen.dart';
 import 'package:bside_todolist/home/home_screen.dart';
 import 'package:bside_todolist/profile/profile_screen.dart';
 import 'package:bside_todolist/screen/quiz_screen.dart';
-import 'package:bside_todolist/screen/photo_screen.dart';
 import 'package:camera/camera.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk_common/kakao_flutter_sdk_common.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 Future main() async {
   await dotenv.load(fileName: ".env");
@@ -41,12 +42,17 @@ Future main() async {
 // Get a specific camera from the list of available cameras.
   final firstCamera = cameras.first;
 
-  runApp(MultiProvider(
-    providers: [
-      ChangeNotifierProvider<AuthProvider>(create: (context) => AuthProvider()),
-    ],
-    child: MyApp(camera: firstCamera),
-  ));
+  runApp(
+    provider.MultiProvider(
+      providers: [
+        provider.ChangeNotifierProvider<AuthProvider>(
+            create: (context) => AuthProvider()),
+      ],
+      child: ProviderScope(
+        child: MyApp(camera: firstCamera),
+      ),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -147,21 +153,7 @@ class MyApp extends StatelessWidget {
                   parentNavigatorKey: _navigatorKey,
                   builder: (BuildContext context, GoRouterState state,
                       Widget child) {
-                    return SafeArea(
-                      child: Scaffold(
-                        appBar: AppBar(
-                          leading: IconButton(
-                            icon: const Icon(Icons.chevron_left),
-                            onPressed: () {
-                              context.pop();
-                            },
-                          ),
-                        ),
-                        resizeToAvoidBottomInset: false,
-                        body: child,
-                        bottomNavigationBar: null,
-                      ),
-                    );
+                    return child;
                   },
                   routes: [
                     GoRoute(

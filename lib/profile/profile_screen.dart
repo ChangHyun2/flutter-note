@@ -1,12 +1,11 @@
-import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
-import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
 import 'package:bside_todolist/common/provider/auth_provider.dart';
+import 'package:bside_todolist/common/provider/user.dart';
 import 'package:bside_todolist/profile/components/profile_feedback.dart';
 import 'package:bside_todolist/profile/components/profile_menu.dart';
 import 'package:bside_todolist/profile/components/profile_user.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -15,10 +14,6 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = context.watch<AuthProvider>();
-
-    String? nickname = authProvider.kakaoUser?.kakaoAccount?.profile?.nickname;
-
     return SingleChildScrollView(
       child: Container(
         color: Colors.white,

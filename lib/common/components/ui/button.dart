@@ -1,34 +1,79 @@
-import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:kakao_flutter_sdk_share/kakao_flutter_sdk_share.dart';
 
 class MyButtonType {
   MyButtonType._();
 
   static const String starGreen = 'starGreen';
   static const String starGreenInverse = 'starGreenInverse';
+  static const String transparent = 'transparent';
 }
 
 Map<String, ButtonStyle> myButtonStyle = {
-  'starGreen': ElevatedButton.styleFrom(
-    foregroundColor: Colors.white,
-    backgroundColor: MyColors.starGreen,
-    textStyle: MyTexts.KRBold14.copyWith(color: Colors.white),
-    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8.0),
-      side: BorderSide(color: MyColors.starGreen),
+  'starGreen': ButtonStyle(
+    foregroundColor: MaterialStateProperty.resolveWith(
+        (Set<MaterialState> states) => states.isEmpty ? Colors.white : null),
+    backgroundColor: MaterialStateProperty.resolveWith(
+        (Set<MaterialState> states) =>
+            states.isEmpty ? MyColors.starGreen : null),
+    textStyle: MaterialStateProperty.all(
+      MyTexts.KRBold14.copyWith(color: Colors.white),
     ),
-    shadowColor: Colors.transparent,
+    padding: MaterialStateProperty.all(
+      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+    ),
+    shadowColor: MaterialStateProperty.all(Colors.transparent),
+    shape: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+
+      return RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        side: BorderSide(
+          color: MyColors.starGreen,
+        ),
+      );
+    }),
+  ),
+  'transparent': ButtonStyle(
+    foregroundColor: MaterialStateProperty.resolveWith(
+      (Set<MaterialState> states) => states.contains(MaterialState.disabled)
+          ? Colors.white
+          : MyColors.starGreen,
+    ),
+    backgroundColor: MaterialStateProperty.resolveWith(
+        (Set<MaterialState> states) => states.contains(MaterialState.disabled)
+            ? null
+            : Colors.transparent),
+    textStyle: MaterialStateProperty.resolveWith(
+      (Set<MaterialState> states) => states.contains(MaterialState.disabled)
+          ? MyTexts.KRBold14.copyWith(color: Colors.white)
+          : MyTexts.KRBold14.copyWith(color: MyColors.starGreen),
+    ),
+    shadowColor: MaterialStateProperty.all(Colors.transparent),
+    padding: MaterialStateProperty.all(
+      EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+    ),
+    shape: MaterialStateProperty.resolveWith((Set<MaterialState> states) {
+      if (states.contains(MaterialState.disabled)) {
+        return null;
+      }
+
+      return RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.0),
+        side: BorderSide(
+          color: MyColors.starGreen,
+        ),
+      );
+    }),
   ),
 };
 
 class MyButton extends StatelessWidget {
   final Widget child;
-  final void Function() onPressed;
+  final void Function()? onPressed;
   final String type;
 
   const MyButton({
