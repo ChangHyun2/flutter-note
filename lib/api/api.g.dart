@@ -215,6 +215,42 @@ Map<String, dynamic> _$SubjectToJson(Subject instance) => <String, dynamic>{
       'modifiedAt': instance.modifiedAt,
     };
 
+CreateQuizRequest _$CreateQuizRequestFromJson(Map<String, dynamic> json) =>
+    CreateQuizRequest(
+      subjectName: json['subjectName'] as String,
+      questionType: (json['questionType'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      difficultyType: (json['difficultyType'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      incorrectReason: (json['incorrectReason'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+    );
+
+Map<String, dynamic> _$CreateQuizRequestToJson(CreateQuizRequest instance) =>
+    <String, dynamic>{
+      'subjectName': instance.subjectName,
+      'questionType': instance.questionType,
+      'difficultyType': instance.difficultyType,
+      'incorrectReason': instance.incorrectReason,
+    };
+
+CreateQuizResponse _$CreateQuizResponseFromJson(Map<String, dynamic> json) =>
+    CreateQuizResponse(
+      quizId: json['quizId'] as String,
+      quizCreatedAt: json['quizCreatedAt'] as String,
+      quizModifiedAt: json['quizModifiedAt'] as String,
+    );
+
+Map<String, dynamic> _$CreateQuizResponseToJson(CreateQuizResponse instance) =>
+    <String, dynamic>{
+      'quizId': instance.quizId,
+      'quizCreatedAt': instance.quizCreatedAt,
+      'quizModifiedAt': instance.quizModifiedAt,
+    };
+
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
@@ -355,6 +391,36 @@ class _RestClient implements RestClient {
               baseUrl,
             ))));
     final value = PostQuestionsResponse.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<CreateQuizResponse>> createQuiz(
+      CreateQuizRequest request) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<CreateQuizResponse>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/quizzes',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = CreateQuizResponse.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
