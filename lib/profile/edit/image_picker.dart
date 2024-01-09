@@ -7,23 +7,30 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:bside_todolist/api/apiClient.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
+import 'package:bside_todolist/common/provider/user.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mime/mime.dart';
 
-class ImagePickerExample extends StatefulWidget {
-  const ImagePickerExample({super.key, this.title, this.profileUrl});
+class ImagePickerExample extends ConsumerStatefulWidget {
+  const ImagePickerExample({
+    super.key,
+    this.title,
+    required this.setPickedFile,
+  });
 
   final String? title;
-  final String? profileUrl;
+  final void Function(XFile) setPickedFile;
 
   @override
-  State<ImagePickerExample> createState() => _ImagePickerStateExample();
+  ConsumerState<ImagePickerExample> createState() => _ImagePickerStateExample();
 }
 
-class _ImagePickerStateExample extends State<ImagePickerExample> {
+class _ImagePickerStateExample extends ConsumerState<ImagePickerExample> {
   List<XFile>? _mediaFileList;
 
   void _setImageFileListFromFile(XFile? value) {
@@ -51,8 +58,13 @@ class _ImagePickerStateExample extends State<ImagePickerExample> {
           imageQuality: 50,
         );
 
+        if (pickedFile == null) return;
+
+        widget.setPickedFile(pickedFile);
+
         setState(() {
           _setImageFileListFromFile(pickedFile);
+          print(pickedFile.path);
         });
       } catch (e) {
         setState(() {
@@ -96,27 +108,39 @@ class _ImagePickerStateExample extends State<ImagePickerExample> {
 
   @override
   Widget build(BuildContext context) {
+    var user = ref.watch(userRiverProvider);
+    print(user.value);
+    String? profileUrl = user.value?.profileUrl;
+
+    print('build image picker');
+    print(user.value.toString());
+
     return Stack(
       children: [
         Container(
           width: 88,
           height: 88,
-          child: widget.profileUrl == null
-              ? Container(
-                  width: 88,
-                  height: 88,
-                  decoration: BoxDecoration(
-                    color: MyColors.cardStroke,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(100),
-                    ),
-                  ),
-                )
+          child: (_mediaFileList ?? []).isEmpty
+              ? profileUrl == null
+                  ? Container(
+                      width: 88,
+                      height: 88,
+                      decoration: BoxDecoration(
+                        color: MyColors.cardStroke,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(100),
+                        ),
+                      ),
+                    )
+                  : CircleAvatar(
+                      radius: 44,
+                      backgroundImage: NetworkImage(profileUrl!),
+                      backgroundColor: MyColors.cardStroke,
+                    )
               : CircleAvatar(
                   radius: 44,
-                  backgroundImage: (_mediaFileList ?? []).isEmpty
-                      ? NetworkImage(widget.profileUrl!)
-                      : Image.file(File(_mediaFileList![0].path)).image,
+                  backgroundImage:
+                      Image.file(File(_mediaFileList![0].path)).image,
                   backgroundColor: MyColors.cardStroke,
                 ),
         ),

@@ -1,4 +1,5 @@
 import 'package:bside_todolist/api/api.dart';
+import 'package:bside_todolist/api/apiClient.dart';
 import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
@@ -8,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:http_parser/http_parser.dart';
 
 class ProfileEditScreen extends ConsumerStatefulWidget {
   const ProfileEditScreen({super.key});
@@ -19,46 +22,84 @@ class ProfileEditScreen extends ConsumerStatefulWidget {
 class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   final _nicknameController = TextEditingController();
   final _commentController = TextEditingController();
-  Image? _profileImage = null;
-  String? _profileUrlEdited = null;
+  XFile? _pickedFile = null;
 
   // 1. update image local state with image picker
 
-  // 2. POST profile image
-  Future<void> editProfileUrl() async {
-    print('get image');
-
-    print('update local image');
-
+  setPickedFile(XFile pickedXFile) {
     setState(() {
-      print('set _profileImage');
+      _pickedFile = pickedXFile;
     });
   }
 
   // 3. POST user
   Future<void> submit() async {
-    if (_profileUrlEdited == null) return;
-    print('save start');
+    final List<MultipartFile> profileImage = [];
+    var postImagesRseponse;
+
+    if (_pickedFile != null) {
+      profileImage.add(
+        MultipartFile.fromBytes(
+          await _pickedFile!.readAsBytes(),
+          filename: _pickedFile!.name,
+          contentType: MediaType('application', 'octet-stream'),
+        ),
+      );
+
+      print('post question images start');
+      postImagesRseponse = await getApiClient().postImagesProfile(profileImage);
+      print('post question images done');
+    }
+
+    print('patch users start');
     try {
-      await ref.read(userRiverProvider.notifier).postUser(
-            PostUserRequest(
-              profileImageUrl: _profileUrlEdited!,
+      await ref.read(userRiverProvider.notifier).patchUsers(
+            PatchUsersRequest(
+              profileImageUrl: postImagesRseponse?.data?.profileImageUrl,
               nickName: _nicknameController.text,
               comment: _commentController.text,
             ),
           );
-      print('save done');
+
+      ref.invalidate(userRiverProvider);
+      print('patch users done');
     } catch (e) {
       print(e);
-      print('save error');
+      print('patch users error');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    var user = ref.watch(userRiverProvider.notifier);
-    String? profileUrl = user.state.value?.profileUrl;
-    print(_nicknameController.text);
+    var user = ref.watch(userRiverProvider);
+    print(user);
+    String? nickname = user.value?.nickName;
+    String? comment = user.value?.comment;
+
+    if (user.hasError) {
+      print('has error');
+    }
+    if (user.isLoading) {
+      print('has loading');
+    }
+    if (user.hasValue) {
+      print('has value');
+      print(user.value);
+
+      _nicknameController.value = TextEditingValue(
+        text: nickname!,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: nickname.length),
+        ),
+      );
+
+      _commentController.value = TextEditingValue(
+        text: comment!,
+        selection: TextSelection.fromPosition(
+          TextPosition(offset: comment.length),
+        ),
+      );
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -77,7 +118,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             Center(
               child: MyButton(
                 type: 'transparent',
-                onPressed: null,
+                onPressed: submit,
                 child: const Text('저장'),
               ),
             ),
@@ -89,9 +130,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
           children: [
             SizedBox(height: 22),
             Center(
-              child: ImagePickerExample(
-                profileUrl: profileUrl,
-              ),
+              child: ImagePickerExample(setPickedFile: setPickedFile),
             ),
             SizedBox(height: 22),
             Form(
@@ -104,35 +143,71 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('닉네임', style: MyTexts.KR16700),
-                    TextFormField(
-                      onSaved: (String? value) {
-                        debugPrint('nickname for field  saved as "$value"');
-                      },
-                      controller: _nicknameController,
-                      decoration: InputDecoration(
-                          filled: true,
-                          fillColor: MyColors.cardFill,
-                          hintText: '수험생123',
-                          border: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Colors.transparent),
+                    nickname == null
+                        ? TextFormField(
+                            onSaved: (String? value) {
+                              debugPrint(
+                                  'nickname for field  saved as "$value"');
+                            },
+                            controller: _nicknameController,
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: MyColors.cardFill,
+                                border: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                suffix: IconButton(
+                                    splashColor: Colors.transparent,
+                                    onPressed: _nicknameController.clear,
+                                    icon: const Icon(
+                                      Icons.clear_rounded,
+                                      color: MyColors.gray500,
+                                    ))),
+                          )
+                        : TextFormField(
+                            onSaved: (String? value) {
+                              debugPrint(
+                                  'nickname for field  saved as "$value"');
+                            },
+                            controller: _nicknameController,
+                            decoration: InputDecoration(
+                                filled: true,
+                                fillColor: MyColors.cardFill,
+                                border: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                  borderSide:
+                                      BorderSide(color: Colors.transparent),
+                                ),
+                                suffix: IconButton(
+                                    splashColor: Colors.transparent,
+                                    onPressed: _nicknameController.clear,
+                                    icon: const Icon(
+                                      Icons.clear_rounded,
+                                      color: MyColors.gray500,
+                                    ))),
                           ),
-                          enabledBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Colors.transparent),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(color: Colors.transparent),
-                          ),
-                          suffix: IconButton(
-                              splashColor: Colors.transparent,
-                              onPressed: _nicknameController.clear,
-                              icon: const Icon(
-                                Icons.clear_rounded,
-                                color: MyColors.gray500,
-                              ))),
-                    ),
                     SizedBox(height: 32),
                     Text('각오 한마디', style: MyTexts.KR16700),
                     TextFormField(

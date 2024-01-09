@@ -65,12 +65,8 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
   Future<void> initPlatformState() async {}
 
   void submit(BuildContext context) async {
-    var getSubjectsResponse = await getApiClient().getSubjects();
-
     // validate form values
     print('start');
-    print(_titleController.text);
-    print(_memoController.text);
 
     var correctAnswers = _questionType == 0
         ? [_answerController.text]
@@ -117,18 +113,22 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
       );
     }
 
-    print(questionImages[0].toString());
-    print(answerImages[0].toString());
-
-    var postImagesRseponse = await getApiClient().postImages(
+    print('post question images start');
+    var postImagesRseponse = await getApiClient().postImagesQuestions(
       questionImages,
       answerImages,
     );
+    print('post question images end');
 
     var answerImageUrls = postImagesRseponse.data.answerImageUrls;
     var questionImageUrls = postImagesRseponse.data.questionImageUrls;
 
-    var postQuestionsResponse = await getApiClient().postQuestions(
+    print('post questions start');
+
+    print(_memoController.text);
+    print(_titleController.text);
+
+    await getApiClient().postQuestions(
       PostQuestionsRequest(
         subjectName: '기본 폴더',
         title: _titleController.text,
@@ -139,11 +139,12 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
         incorrectReason: incorrectReasons[_incorrectReason]!,
         keywords: _keywords,
         questionImageUrls: questionImageUrls,
-        answerImageUrls: questionImageUrls,
+        answerImageUrls: answerImageUrls,
         // questionImageUrls: ['https://picsum.photos/200/300'],
         // answerImageUrls: ['https://picsum.photos/200/300'],
       ),
     );
+    print('post questions end');
   }
 
   Widget buildFolderDropdownMenu() {
@@ -794,6 +795,9 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                   TextFormField(
                                     controller: _keywordController,
                                     onEditingComplete: () {
+                                      if (_keywordController.value.text == '')
+                                        return;
+
                                       setState(() {
                                         _keywords = {
                                           ..._keywords,

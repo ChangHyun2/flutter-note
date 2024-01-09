@@ -6,14 +6,14 @@ part of 'api.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-PostUserRequest _$PostUserRequestFromJson(Map<String, dynamic> json) =>
-    PostUserRequest(
-      profileImageUrl: json['profileImageUrl'] as String,
-      nickName: json['nickName'] as String,
-      comment: json['comment'] as String,
+PatchUsersRequest _$PatchUsersRequestFromJson(Map<String, dynamic> json) =>
+    PatchUsersRequest(
+      profileImageUrl: json['profileImageUrl'] as String?,
+      nickName: json['nickName'] as String?,
+      comment: json['comment'] as String?,
     );
 
-Map<String, dynamic> _$PostUserRequestToJson(PostUserRequest instance) =>
+Map<String, dynamic> _$PatchUsersRequestToJson(PatchUsersRequest instance) =>
     <String, dynamic>{
       'profileImageUrl': instance.profileImageUrl,
       'nickName': instance.nickName,
@@ -24,12 +24,12 @@ StarUser _$StarUserFromJson(Map<String, dynamic> json) => StarUser(
       id: json['id'] as String,
       kakaoId: json['kakaoId'] as int,
       email: json['email'] as String,
-      profileUrl: json['profileUrl'] as String,
+      profileUrl: json['profileUrl'] as String?,
       nickName: json['nickName'] as String,
-      comment: json['comment'] as String,
-      attendence: json['attendence'] as int,
+      comment: json['comment'] as String?,
+      attendance: json['attendance'] as int,
       lastConnectionDate: json['lastConnectionDate'] as String,
-      totalReviewTime: json['totalReviewTime'] as String,
+      totalReviewTime: json['totalReviewTime'] as int?,
     );
 
 Map<String, dynamic> _$StarUserToJson(StarUser instance) => <String, dynamic>{
@@ -39,7 +39,7 @@ Map<String, dynamic> _$StarUserToJson(StarUser instance) => <String, dynamic>{
       'profileUrl': instance.profileUrl,
       'nickName': instance.nickName,
       'comment': instance.comment,
-      'attendence': instance.attendence,
+      'attendance': instance.attendance,
       'lastConnectionDate': instance.lastConnectionDate,
       'totalReviewTime': instance.totalReviewTime,
     };
@@ -111,7 +111,7 @@ PostQuestionsRequest _$PostQuestionsRequestFromJson(
       title: json['title'] as String,
       questionType: json['questionType'] as String,
       difficultyType: json['difficultyType'] as String,
-      memo: json['memo'] as String,
+      memo: json['memo'] as String?,
       correctAnswers: (json['correctAnswers'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -141,8 +141,9 @@ Map<String, dynamic> _$PostQuestionsRequestToJson(
       'answerImageUrls': instance.answerImageUrls,
     };
 
-PostImagesResponse _$PostImagesResponseFromJson(Map<String, dynamic> json) =>
-    PostImagesResponse(
+PostImagesQuestionsResponse _$PostImagesQuestionsResponseFromJson(
+        Map<String, dynamic> json) =>
+    PostImagesQuestionsResponse(
       questionImageUrls: (json['questionImageUrls'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
@@ -152,11 +153,24 @@ PostImagesResponse _$PostImagesResponseFromJson(Map<String, dynamic> json) =>
       profileUrl: json['profileUrl'] as String,
     );
 
-Map<String, dynamic> _$PostImagesResponseToJson(PostImagesResponse instance) =>
+Map<String, dynamic> _$PostImagesQuestionsResponseToJson(
+        PostImagesQuestionsResponse instance) =>
     <String, dynamic>{
       'questionImageUrls': instance.questionImageUrls,
       'answerImageUrls': instance.answerImageUrls,
       'profileUrl': instance.profileUrl,
+    };
+
+PostImagesProfileResponse _$PostImagesProfileResponseFromJson(
+        Map<String, dynamic> json) =>
+    PostImagesProfileResponse(
+      profileImageUrl: json['profileImageUrl'] as String,
+    );
+
+Map<String, dynamic> _$PostImagesProfileResponseToJson(
+        PostImagesProfileResponse instance) =>
+    <String, dynamic>{
+      'profileImageUrl': instance.profileImageUrl,
     };
 
 PostAuthKakaoRequest _$PostAuthKakaoRequestFromJson(
@@ -250,7 +264,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<PostImagesResponse>> postImages(
+  Future<HttpResponse<PostImagesQuestionsResponse>> postImagesQuestions(
     List<MultipartFile> questionImages,
     List<MultipartFile> answerImages,
   ) async {
@@ -262,7 +276,7 @@ class _RestClient implements RestClient {
         .addAll(questionImages.map((i) => MapEntry('questionImages', i)));
     _data.files.addAll(answerImages.map((i) => MapEntry('answerImages', i)));
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<HttpResponse<PostImagesResponse>>(Options(
+        _setStreamType<HttpResponse<PostImagesQuestionsResponse>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -279,7 +293,38 @@ class _RestClient implements RestClient {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = PostImagesResponse.fromJson(_result.data!);
+    final value = PostImagesQuestionsResponse.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<PostImagesProfileResponse>> postImagesProfile(
+      List<MultipartFile> profileImage) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.files.addAll(profileImage.map((i) => MapEntry('profileImage', i)));
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<PostImagesProfileResponse>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+            .compose(
+              _dio.options,
+              '/images/profile',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = PostImagesProfileResponse.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }
@@ -343,7 +388,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<StarUser>> getUser() async {
+  Future<HttpResponse<StarUser>> getUsers() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -356,7 +401,7 @@ class _RestClient implements RestClient {
     )
             .compose(
               _dio.options,
-              '/user',
+              '/users',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -371,7 +416,7 @@ class _RestClient implements RestClient {
   }
 
   @override
-  Future<HttpResponse<StarUser>> postUser(PostUserRequest request) async {
+  Future<HttpResponse<StarUser>> patchUsers(PatchUsersRequest request) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -379,13 +424,13 @@ class _RestClient implements RestClient {
     _data.addAll(request.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<HttpResponse<StarUser>>(Options(
-      method: 'POST',
+      method: 'PATCH',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/user',
+              '/users',
               queryParameters: queryParameters,
               data: _data,
             )
