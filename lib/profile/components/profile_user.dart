@@ -14,7 +14,7 @@ class ProfileUser extends ConsumerWidget {
     var starUser = ref.watch(userRiverProvider);
     String? profileUrl = starUser.value?.profileUrl;
     String nickname = starUser.value?.nickName ?? '';
-    String comment = starUser.value?.comment ?? '반복이 합격의 비법!';
+    String comment = starUser.value?.comment ?? '';
 
     var reviewTimes = '1시간 8분';
     var checkinDays = '3일';
