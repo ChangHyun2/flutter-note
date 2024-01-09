@@ -33,9 +33,9 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   }
 
   // 3. POST user
-  Future<void> submit() async {
+  Future<void> submit(nickname, comment) async {
     final List<MultipartFile> profileImage = [];
-    var postImagesRseponse;
+    PostImagesProfileResponse? postImagesRseponse;
 
     if (_pickedFile != null) {
       profileImage.add(
@@ -47,7 +47,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       );
 
       print('post question images start');
-      postImagesRseponse = await getApiClient().postImagesProfile(profileImage);
+      postImagesRseponse =
+          (await getApiClient().postImagesProfile(profileImage))?.data;
       print('post question images done');
     }
 
@@ -55,9 +56,13 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     try {
       await ref.read(userRiverProvider.notifier).patchUsers(
             PatchUsersRequest(
-              profileImageUrl: postImagesRseponse?.data?.profileImageUrl,
-              nickName: _nicknameController.text,
-              comment: _commentController.text,
+              profileImageUrl: postImagesRseponse?.profileImageUrl,
+              nickName: _nicknameController.text == nickname
+                  ? null
+                  : _nicknameController.text,
+              comment: _commentController.text == comment
+                  ? null
+                  : _commentController.text,
             ),
           );
 
@@ -73,8 +78,8 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
   Widget build(BuildContext context) {
     var user = ref.watch(userRiverProvider);
     print(user);
-    String? nickname = user.value?.nickName;
-    String? comment = user.value?.comment;
+    String? nickname = user?.value?.nickName ?? '';
+    String? comment = user?.value?.comment ?? '';
 
     if (user.hasError) {
       print('has error');
@@ -118,7 +123,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
             Center(
               child: MyButton(
                 type: 'transparent',
-                onPressed: submit,
+                onPressed: () => submit(nickname, comment),
                 child: const Text('저장'),
               ),
             ),

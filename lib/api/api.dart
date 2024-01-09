@@ -56,7 +56,8 @@ class PatchUsersRequest {
   final String? nickName;
   final String? comment;
 
-  Map<String, dynamic> toJson() => _$PatchUsersRequestToJson(this);
+  Map<String, dynamic> toJson() => Map.fromEntries(
+      _$PatchUsersRequestToJson(this).entries.where((e) => e.value != null));
 }
 
 @JsonSerializable()
