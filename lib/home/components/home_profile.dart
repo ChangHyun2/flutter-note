@@ -1,20 +1,20 @@
+import 'package:bside_todolist/common/provider/user.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../common/components/ui/system/colors.dart';
 import '../../common/components/ui/system/texts.dart';
-import '../../common/provider/auth_provider.dart';
 import 'package:go_router/go_router.dart';
 
-class HomeProfile extends StatelessWidget {
+class HomeProfile extends ConsumerWidget {
   const HomeProfile({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var authProvider = context.watch<AuthProvider>();
-    var kakaoAccount = authProvider.kakaoUser?.kakaoAccount;
-    var name = kakaoAccount?.profile?.nickname;
-    var profileUrl = kakaoAccount?.profile?.thumbnailImageUrl;
+  Widget build(BuildContext context, ref) {
+    var user = ref.watch(userRiverProvider);
+    var name = user.value?.nickName ?? '';
+    var profileUrl = user.value?.profileUrl;
+    var comment = user.value?.comment ?? '반복이 합격의 비밀!';
 
     return Container(
       height: 200,
@@ -30,7 +30,7 @@ class HomeProfile extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  '일이삼사오육칠팔구십일이삼사오육',
+                  comment,
                   style: MyTexts.KRBold17.copyWith(
                     color: Colors.white,
                   ),
