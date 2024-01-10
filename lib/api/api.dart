@@ -309,7 +309,7 @@ class CreateQuizResponse {
     required this.quizModifiedAt,
   });
 
-  Map<String, dynamic> toJson() => _$CreateQuizResponseFromJson(this);
+  Map<String, dynamic> toJson() => _$CreateQuizResponseToJson(this);
 }
 
 
