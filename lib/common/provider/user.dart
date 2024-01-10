@@ -25,7 +25,7 @@ class UserRiver extends _$UserRiver {
       final response = await getApiClient().patchUsers(patchUserRequest);
 
       print(response.data);
-      ref.invalidateSelf();
+      state = AsyncData(response.data);
     } catch (e) {
       print('patch users error');
       print(e);

@@ -1,22 +1,15 @@
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
-import 'package:bside_todolist/common/provider/auth_provider.dart';
 import 'package:bside_todolist/home/components/home_create_quiz.dart';
 import 'package:bside_todolist/home/components/home_subjects.dart';
 import 'package:bside_todolist/home/components/home_profile.dart';
 import 'package:bside_todolist/home/components/home_today_quiz.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    var authProvider = context.watch<AuthProvider>();
-    var kakaoAccount = authProvider.kakaoUser?.kakaoAccount;
-    var name = kakaoAccount?.profile?.nickname;
-    var profileUrl = kakaoAccount?.profile?.thumbnailImageUrl;
-
     return SingleChildScrollView(
       physics: const ClampingScrollPhysics(),
       child: Stack(

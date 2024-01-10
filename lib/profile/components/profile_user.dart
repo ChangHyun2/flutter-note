@@ -11,9 +11,10 @@ class ProfileUser extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, ref) {
-    var starUser = ref.read(userRiverProvider.notifier);
-    String? profileUrl = starUser.state.value?.profileUrl;
-    String nickname = starUser.state.value?.nickName ?? '';
+    var starUser = ref.watch(userRiverProvider);
+    String? profileUrl = starUser.value?.profileUrl;
+    String nickname = starUser.value?.nickName ?? '';
+    String comment = starUser.value?.comment ?? '';
 
     var reviewTimes = '1시간 8분';
     var checkinDays = '3일';
@@ -49,7 +50,7 @@ class ProfileUser extends ConsumerWidget {
                               ),
                             ),
                             Text(
-                              '반복이 합격의 비법!',
+                              comment,
                               style: MyTexts.KR14400.copyWith(height: 1.5),
                             )
                           ],
