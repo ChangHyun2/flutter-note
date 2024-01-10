@@ -59,14 +59,15 @@ class AuthProvider extends ChangeNotifier {
       if (user.kakaoAccount != null) {
         final kakaoAccount = user.kakaoAccount!;
         print('star login start');
+        print(kakaoAccount.profile!.nickname);
         PostAuthKakaoRequest postAuthKakaoRequest = PostAuthKakaoRequest(
             id: user.id,
             email: kakaoAccount.email!,
             nickname: kakaoAccount.profile!.nickname!,
             profileUrl: kakaoAccount.profile!.thumbnailImageUrl!);
-        print('star login success');
 
         var value = await getApiClient().postAuthKakao(postAuthKakaoRequest);
+        print('star login success');
 
         SharedPreferences prefs = await SharedPreferences.getInstance();
 

@@ -17,7 +17,7 @@ RestClient getApiClient() {
       }
 
       return handler.next(options);
-    }, onError: (DioError e, handler) async {
+    }, onError: (DioException e, handler) async {
       if (e.response?.statusCode == 401) {
         try {
           SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -42,21 +42,28 @@ RestClient getApiClient() {
             );
 
             print('refresh token start');
-            var value =
-                await getApiClient().postAuthKakao(postAuthKakaoRequest);
-            String accessToken = value.data.accessToken;
-            e.requestOptions.headers['Authorization'] = 'Bearer $accessToken';
-            prefs.setString(
-                StarSharedPreferencesKeys.starAccessToken, accessToken);
-            print('refresh token success');
+
+            try {
+              var value =
+                  await getApiClient().postAuthKakao(postAuthKakaoRequest);
+              String accessToken = value.data.accessToken;
+              e.requestOptions.headers['Authorization'] = 'Bearer $accessToken';
+              prefs.setString(
+                  StarSharedPreferencesKeys.starAccessToken, accessToken);
+              print('refresh token success');
+
+              return handler.resolve(await dio.fetch(e.requestOptions));
+            } on DioException catch (e) {
+              print('refresh toekn failure');
+
+              return handler.next(e);
+            }
           }
-        } catch (error) {
-          print('refresh token failure');
-          print(error.toString());
+        } on DioException catch (e) {
+          return handler.next(e);
         }
 
         // Repeat the request with the updated header
-        return handler.resolve(await dio.fetch(e.requestOptions));
       }
       return handler.next(e);
     }),
