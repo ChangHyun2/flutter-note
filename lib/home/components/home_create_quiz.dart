@@ -2,6 +2,7 @@ import 'package:bside_todolist/common/components/ui/button.dart';
 import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/provider/subjects.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomeCreateQuiz extends ConsumerWidget {
@@ -28,11 +29,9 @@ class HomeCreateQuiz extends ConsumerWidget {
               SizedBox(
                 width: 260,
                 child: MyButton(
-                  onPressed: hasQuiz
-                      ? () {
-                          print('hello');
-                        }
-                      : null,
+                  onPressed: () {
+                    context.go('/folders/create');
+                  },
                   type: MyButtonType.starGreen,
                   child: const Text('나만의 퀴즈 만들기'),
                 ),

@@ -29,7 +29,9 @@ class ProfileMenu extends StatelessWidget {
             Icons.chevron_right,
             color: MyColors.gray900,
           ),
-          onTap: () {},
+          onTap: () {
+            context.go('/board');
+          },
         ),
         const Divider(
           thickness: 1,

@@ -6,6 +6,7 @@ import 'package:bside_todolist/profile/components/profile_menu.dart';
 import 'package:bside_todolist/profile/components/profile_user.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -30,7 +31,11 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 12),
             const ProfileUser(),
             const SizedBox(height: 24),
-            const ProfileFeedback(),
+            InkWell(
+                onTap: () {
+                  context.go('/board/opinion');
+                },
+                child: const ProfileFeedback()),
             const SizedBox(
               height: 24,
             ),

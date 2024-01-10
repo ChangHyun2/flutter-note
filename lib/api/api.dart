@@ -31,6 +31,11 @@ abstract class RestClient {
     @Body() PostQuestionsRequest request,
   );
 
+  @POST('/quizzes')
+  Future<HttpResponse<CreateQuizResponse>> createQuiz(
+    @Body() CreateQuizRequest request,
+  );
+
   @GET('/subjects')
   Future<HttpResponse<GetSubjectsResponse>> getSubjects();
 
@@ -262,3 +267,88 @@ class Subject {
 
   Map<String, dynamic> toJson() => _$SubjectToJson(this);
 }
+
+@JsonSerializable()
+class CreateQuizRequest {
+  final String subjectName;
+  final List<String> questionType;
+  final List<String> difficultyType;
+  final List<String> incorrectReason;
+
+  CreateQuizRequest({
+    required this.subjectName,
+    required this.questionType,
+    required this.difficultyType,
+    required this.incorrectReason,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'subjectName': subjectName,
+      'questionType': questionType,
+      'difficultyType': difficultyType,
+      'incorrectReason': incorrectReason,
+    };
+  }
+}
+
+@JsonSerializable()
+class CreateQuizResponse {
+  final String quizId;
+  //final Question question;
+  final String quizCreatedAt;
+  final String quizModifiedAt;
+
+  factory CreateQuizResponse.fromJson(Map<String, dynamic> json) =>
+      _$CreateQuizResponseFromJson(json);
+
+  CreateQuizResponse({
+    required this.quizId,
+    //required this.question,
+    required this.quizCreatedAt,
+    required this.quizModifiedAt,
+  });
+
+  Map<String, dynamic> toJson() => _$CreateQuizResponseToJson(this);
+}
+
+
+// @JsonSerializable()
+// class Question {
+//   final String id;
+//   final String title;
+//   final String questionType;
+//   final String difficultyType;
+//   final String memo;
+//   final String incorrectReason;
+//   final List<String> correctAnswers;
+//   final List<String> keywords;
+//   final List<String> questionImageUrls;
+//   final List<String> answerImageUrls;
+//   final String questionCreatedAt;
+//   final String questionModifiedAt;
+//   final String answerCreatedAt;
+//   final String answerModifiedAt;
+
+//   factory Question.fromJson(Map<String, dynamic> json) =>
+//       _$QuestionFromJson(json);
+
+//   Question({
+//     required this.id,
+//     required this.title,
+//     required this.questionType,
+//     required this.difficultyType,
+//     required this.memo,
+//     required this.incorrectReason,
+//     required this.correctAnswers,
+//     required this.keywords,
+//     required this.questionImageUrls,
+//     required this.answerImageUrls,
+//     required this.questionCreatedAt,
+//     required this.questionModifiedAt,
+//     required this.answerCreatedAt,
+//     required this.answerModifiedAt,
+//   });
+
+//   Map<String, dynamic> toJson() => _$QuestionFromJson(this);
+// }
