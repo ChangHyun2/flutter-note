@@ -6,6 +6,7 @@ import 'package:bside_todolist/common/components/ui/card_wrapper.dart';
 import 'package:bside_todolist/common/components/ui/system/box_shadow.dart';
 import 'package:bside_todolist/common/components/ui/system/colors.dart';
 import 'package:bside_todolist/common/components/ui/system/texts.dart';
+import 'package:bside_todolist/questions/create/components/image_carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:cunning_document_scanner/cunning_document_scanner.dart';
@@ -235,6 +236,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
     double bottom = MediaQuery.of(context).viewInsets.bottom;
     bool isKeyboardOpened = bottom > 0;
 
+    print(_questionPictures);
     return SafeArea(
       child: KeyboardDismissOnTap(
         child: Scaffold(
@@ -263,33 +265,34 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                           children: [
                             const SizedBox(height: 12),
                             // problem document scanner
-                            InkWell(
-                              onTap: () async {
-                                List<String> pictures;
+                            CardWrapper(
+                              borderRadius: 4,
+                              child: SizedBox(
+                                height: 360,
+                                width: double.infinity,
+                                child: _questionPictures.isEmpty
+                                    ? InkWell(
+                                        onTap: () async {
+                                          List<String> pictures;
 
-                                try {
-                                  pictures =
-                                      await CunningDocumentScanner.getPictures(
-                                              true) ??
-                                          [];
+                                          try {
+                                            pictures =
+                                                await CunningDocumentScanner
+                                                        .getPictures(true) ??
+                                                    [];
 
-                                  if (!mounted) return;
+                                            if (!mounted) return;
 
-                                  setState(() {
-                                    _questionPictures = pictures;
-                                  });
-                                } catch (exception) {
-                                  print(exception);
-                                  // Handle exception here
-                                }
-                              },
-                              child: CardWrapper(
-                                borderRadius: 4,
-                                child: SizedBox(
-                                  height: 360,
-                                  width: double.infinity,
-                                  child: _questionPictures.isEmpty
-                                      ? const Column(
+                                            print(_questionPictures);
+                                            setState(() {
+                                              _questionPictures = pictures;
+                                            });
+                                          } catch (exception) {
+                                            print(exception);
+                                            // Handle exception here
+                                          }
+                                        },
+                                        child: const Column(
                                           mainAxisAlignment:
                                               MainAxisAlignment.center,
                                           children: [
@@ -301,15 +304,15 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                             SizedBox(height: 26),
                                             Text('문제를 등록해 보세요'),
                                           ],
-                                        )
-                                      : Column(
-                                          children: [
-                                            for (var picture
-                                                in _questionPictures)
-                                              Image.file(File(picture))
-                                          ],
                                         ),
-                                ),
+                                      )
+                                    : ImageCarouselSlider(images: [
+                                        for (var picture in _questionPictures)
+                                          Image.file(
+                                            File(picture),
+                                            fit: BoxFit.fill,
+                                          )
+                                      ]),
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -676,7 +679,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                               child: CardWrapper(
                                 borderRadius: 4,
                                 child: SizedBox(
-                                  height: 140,
+                                  height: 360,
                                   width: double.infinity,
                                   child: _answerPictures.isEmpty
                                       ? const Column(
@@ -692,12 +695,10 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                                             Text('해설을 등록해 보세요'),
                                           ],
                                         )
-                                      : Column(
-                                          children: [
-                                            for (var picture in _answerPictures)
-                                              Image.file(File(picture))
-                                          ],
-                                        ),
+                                      : ImageCarouselSlider(images: [
+                                          for (var picture in _answerPictures)
+                                            Image.file(File(picture))
+                                        ]),
                                 ),
                               ),
                             ),
