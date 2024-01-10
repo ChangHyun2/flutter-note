@@ -31,7 +31,7 @@ class _LandingScreenState extends State<LandingScreen> {
           context.go('/login');
         }
       } else {
-        context.go('/questions');
+        context.go('/login');
       }
     });
   }
