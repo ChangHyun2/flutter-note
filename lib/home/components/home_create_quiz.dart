@@ -29,9 +29,11 @@ class HomeCreateQuiz extends ConsumerWidget {
               SizedBox(
                 width: 260,
                 child: MyButton(
-                  onPressed: () {
-                    context.go('/folders/create');
-                  },
+                  onPressed: hasQuiz
+                      ? () {
+                          context.go('/folders/create');
+                        }
+                      : null,
                   type: MyButtonType.starGreen,
                   child: const Text('나만의 퀴즈 만들기'),
                 ),
