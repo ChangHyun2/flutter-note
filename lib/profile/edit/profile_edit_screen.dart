@@ -56,17 +56,12 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
     try {
       await ref.read(userRiverProvider.notifier).patchUsers(
             PatchUsersRequest(
-              profileImageUrl: postImagesRseponse?.profileImageUrl,
-              nickName: _nicknameController.text == nickname
-                  ? null
-                  : _nicknameController.text,
-              comment: _commentController.text == comment
-                  ? null
-                  : _commentController.text,
+              profileUrl: postImagesRseponse?.profileImageUrl,
+              nickName: _nicknameController.text,
+              comment: _commentController.text,
             ),
           );
 
-      ref.invalidate(userRiverProvider);
       print('patch users done');
     } catch (e) {
       print(e);

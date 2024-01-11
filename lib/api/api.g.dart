@@ -8,14 +8,14 @@ part of 'api.dart';
 
 PatchUsersRequest _$PatchUsersRequestFromJson(Map<String, dynamic> json) =>
     PatchUsersRequest(
-      profileImageUrl: json['profileImageUrl'] as String?,
+      profileUrl: json['profileUrl'] as String?,
       nickName: json['nickName'] as String?,
       comment: json['comment'] as String?,
     );
 
 Map<String, dynamic> _$PatchUsersRequestToJson(PatchUsersRequest instance) =>
     <String, dynamic>{
-      'profileImageUrl': instance.profileImageUrl,
+      'profileUrl': instance.profileUrl,
       'nickName': instance.nickName,
       'comment': instance.comment,
     };
@@ -150,7 +150,6 @@ PostImagesQuestionsResponse _$PostImagesQuestionsResponseFromJson(
       answerImageUrls: (json['answerImageUrls'] as List<dynamic>)
           .map((e) => e as String)
           .toList(),
-      profileUrl: json['profileUrl'] as String,
     );
 
 Map<String, dynamic> _$PostImagesQuestionsResponseToJson(
@@ -158,7 +157,6 @@ Map<String, dynamic> _$PostImagesQuestionsResponseToJson(
     <String, dynamic>{
       'questionImageUrls': instance.questionImageUrls,
       'answerImageUrls': instance.answerImageUrls,
-      'profileUrl': instance.profileUrl,
     };
 
 PostImagesProfileResponse _$PostImagesProfileResponseFromJson(
@@ -249,6 +247,61 @@ Map<String, dynamic> _$CreateQuizResponseToJson(CreateQuizResponse instance) =>
       'quizId': instance.quizId,
       'quizCreatedAt': instance.quizCreatedAt,
       'quizModifiedAt': instance.quizModifiedAt,
+    };
+
+GetQuestionsSubjectsIdResponse _$GetQuestionsSubjectsIdResponseFromJson(
+        Map<String, dynamic> json) =>
+    GetQuestionsSubjectsIdResponse(
+      questions: (json['questions'] as List<dynamic>)
+          .map((e) => Question.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$GetQuestionsSubjectsIdResponseToJson(
+        GetQuestionsSubjectsIdResponse instance) =>
+    <String, dynamic>{
+      'questions': instance.questions,
+    };
+
+Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
+      id: json['id'] as String,
+      title: json['title'] as String,
+      questionType: json['questionType'] as String,
+      difficultyType: json['difficultyType'] as String,
+      memo: json['memo'] as String,
+      incorrectReason: json['incorrectReason'] as String,
+      correctAnswers: (json['correctAnswers'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      keywords:
+          (json['keywords'] as List<dynamic>).map((e) => e as String).toList(),
+      questionImageUrls: (json['questionImageUrls'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      answerImageUrls: (json['answerImageUrls'] as List<dynamic>)
+          .map((e) => e as String)
+          .toList(),
+      questionCreatedAt: json['questionCreatedAt'] as String,
+      questionModifiedAt: json['questionModifiedAt'] as String,
+      answerCreatedAt: json['answerCreatedAt'] as String,
+      answerModifiedAt: json['answerModifiedAt'] as String,
+    );
+
+Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
+      'id': instance.id,
+      'title': instance.title,
+      'questionType': instance.questionType,
+      'difficultyType': instance.difficultyType,
+      'memo': instance.memo,
+      'incorrectReason': instance.incorrectReason,
+      'correctAnswers': instance.correctAnswers,
+      'keywords': instance.keywords,
+      'questionImageUrls': instance.questionImageUrls,
+      'answerImageUrls': instance.answerImageUrls,
+      'questionCreatedAt': instance.questionCreatedAt,
+      'questionModifiedAt': instance.questionModifiedAt,
+      'answerCreatedAt': instance.answerCreatedAt,
+      'answerModifiedAt': instance.answerModifiedAt,
     };
 
 // **************************************************************************
@@ -391,6 +444,35 @@ class _RestClient implements RestClient {
               baseUrl,
             ))));
     final value = PostQuestionsResponse.fromJson(_result.data!);
+    final httpResponse = HttpResponse(value, _result);
+    return httpResponse;
+  }
+
+  @override
+  Future<HttpResponse<GetQuestionsSubjectsIdResponse>> getQuestionsSubjectsId(
+      String id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<HttpResponse<GetQuestionsSubjectsIdResponse>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/questions/subjects/${id}',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GetQuestionsSubjectsIdResponse.fromJson(_result.data!);
     final httpResponse = HttpResponse(value, _result);
     return httpResponse;
   }

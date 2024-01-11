@@ -145,6 +145,7 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
         // answerImageUrls: ['https://picsum.photos/200/300'],
       ),
     );
+    context.go('/questions');
     print('post questions end');
   }
 
@@ -866,7 +867,9 @@ class _QuestionsCreateScreenState extends State<QuestionsCreateScreen> {
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 35, vertical: 11),
                             child: MyButton(
-                              onPressed: () => submit(context),
+                              onPressed: () {
+                                submit(context);
+                              },
                               type: MyButtonType.starGreen,
                               child: const Text('문제와 해설 등록하기'),
                             ),
